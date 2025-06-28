@@ -20,11 +20,13 @@ public class StartGame : MonoBehaviour
         PrimeTweenConfig.defaultEase = Ease.Linear;
 
         Utils.isInitGame = true;
-        CSVMgr.Init();
 
         playGameBtn.onClick.AddListener(OnPlayGame);
         zhiZuoRenBtn.onClick.AddListener(OnZhiZuoRen);
         exitGameBtn.onClick.AddListener(OnExitGame);
+
+        CSVMgr.Init();
+        AudioMgr.Instance.Init();
 
         maskBg.SetActive(false);
     }

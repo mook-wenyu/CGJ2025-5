@@ -1,5 +1,10 @@
-﻿唯一标识,名称,位置,特性,表情
-id,name,pos,trait,emotion
-string,string,string,string,string[]
-1001,名称,位置,特性,"表情,表情"
-1002,名称,位置,特性,表情
+﻿唯一标识,名称,位置
+id,name,pos
+string,string,string
+bingxiang,冰箱,厨房
+lajitong,智能垃圾桶,卧室
+saodijiqiren,扫地机器人,卧室
+xiyiji,滚筒洗衣机,厨房
+shaoshuihu,烧水壶,厨房
+kongtiao,空调,卧室
+shizhong,时钟,卧室

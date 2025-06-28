@@ -30,6 +30,7 @@ public class MainScene : MonoBehaviour
         bgPanel.SetActive(true);
         mainMenu.SetActive(true);
         fgPanel.transform.localPosition = new Vector2(1920, 0);
+        fgPanel.SetActive(true);
         initStartPanel.GetComponent<Button>().onClick.AddListener(OnStartClick);
         initStartPanel.SetActive(false);
     }
