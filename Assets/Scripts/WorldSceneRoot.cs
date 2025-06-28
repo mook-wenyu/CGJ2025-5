@@ -42,8 +42,11 @@ public class WorldSceneRoot : MonoBehaviour
                 bedroomUIRoot.SetActive(true);
                 bedroomRoot.SetActive(true);
 
-                Tween.LocalPositionX(kitchenUIRoot.transform, Screen.width, 0.5f);
-                Tween.PositionX(kitchenRoot.transform, kitchenRootX, 0.5f).OnComplete(() =>
+                Tween.LocalPositionX(bedroomUIRoot.transform, 0, 0.3f);
+                Tween.PositionX(bedroomRoot.transform, 0, 0.3f);
+
+                Tween.LocalPositionX(kitchenUIRoot.transform, Screen.width, 0.3f);
+                Tween.PositionX(kitchenRoot.transform, kitchenRootX, 0.3f).OnComplete(() =>
                 {
                     kitchenUIRoot.SetActive(false);
                     kitchenRoot.SetActive(false);
@@ -57,12 +60,16 @@ public class WorldSceneRoot : MonoBehaviour
                 kitchenUIRoot.SetActive(true);
                 kitchenRoot.SetActive(true);
 
-                Tween.LocalPositionX(kitchenUIRoot.transform, 0, 0.5f);
-                Tween.PositionX(kitchenRoot.transform, 0, 0.5f).OnComplete(() =>
+                Tween.LocalPositionX(kitchenUIRoot.transform, 0, 0.3f);
+                Tween.PositionX(kitchenRoot.transform, 0, 0.3f);
+
+                Tween.LocalPositionX(bedroomUIRoot.transform, -Screen.width, 0.3f);
+                Tween.PositionX(bedroomRoot.transform, -kitchenRootX, 0.3f).OnComplete(() =>
                 {
                     bedroomUIRoot.SetActive(false);
                     bedroomRoot.SetActive(false);
                 });
+
             }
         }
     }
