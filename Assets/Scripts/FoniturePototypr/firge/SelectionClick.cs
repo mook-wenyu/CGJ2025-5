@@ -5,7 +5,7 @@ using UnityEngine;
 public class SelectionClick : MonoBehaviour
 {
     public firge firgeScript;         // 拖入 frige 脚本
-    public GameObject dialogueUI;     // 拖入 dialogue 对象（UI）
+    public GameObject dialogueUI;     // 拖入 dialogue 对象
 
     public void OnClickSelection()
     {

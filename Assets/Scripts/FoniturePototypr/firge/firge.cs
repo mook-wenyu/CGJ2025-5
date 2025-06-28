@@ -129,7 +129,7 @@ public class firge : MonoBehaviour
 
     public void ResetToCalm()
     {
-        Debug.Log("点击 say：怒气清零，回到状态0");
+        Debug.Log("怒气清零，回到状态0");
 
         type = 0;
         anger = startanger;

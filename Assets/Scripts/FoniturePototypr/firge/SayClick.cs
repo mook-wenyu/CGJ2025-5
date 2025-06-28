@@ -32,5 +32,6 @@ public class SayClick : MonoBehaviour
                 Debug.Log("按钮位置未交换");
             }
         }
+        gameObject.SetActive(false);
     }
 }
