@@ -109,10 +109,10 @@ MonoBehaviour:
   rotationSpeed: 360
   status: 0
   imgs:
-  - {fileID: 21300000, guid: dc547143903e3a741aaa76cef40b1858, type: 3}
+  - {fileID: 21300000, guid: 4f761e1f2ee6836418f815f1d20bc5b9, type: 3}
   - {fileID: 21300000, guid: ab05c366be89e1e42a4aeacdef1ecf72, type: 3}
   - {fileID: 21300000, guid: 44750d5c6eb9b3f4cbe1757803ce6231, type: 3}
-  - {fileID: 21300000, guid: 7b90cd18d0be5b54da7aa6fac388913f, type: 3}
+  - {fileID: 21300000, guid: 8e86cd56acdba494598ce27dacbf7dc4, type: 3}
 --- !u!61 &5554611914759297246
 BoxCollider2D:
   m_ObjectHideFlags: 0

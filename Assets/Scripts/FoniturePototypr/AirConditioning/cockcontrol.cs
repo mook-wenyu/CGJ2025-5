@@ -15,7 +15,7 @@ public class CockroachSpawner : MonoBehaviour
 
     void Start()
     {
-        airconditioning.isdie = false;
+        //airconditioning.isdie = false;
         StartCoroutine(StartDelayed());
     }
 
@@ -36,10 +36,10 @@ public class CockroachSpawner : MonoBehaviour
     {
         while (true)
         {
-            if(airconditioning.isdie)
-            {
-                break;
-            }
+            //if(airconditioning.isdie)
+            //{
+            //    break;
+            //}
             float delay = Random.Range(startTime, endTime);
             Debug.Log($"将在 {delay:F1} 秒后生成");
             yield return new WaitForSeconds(delay);

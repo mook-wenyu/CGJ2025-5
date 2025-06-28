@@ -1,15 +1,37 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class airconditioning : MonoBehaviour
 {
+    public enum Status
+    {
+        S0,
+        S1, 
+        S2, 
+        S3
+    }
     public int type = 0;
 
     [Header("ÅÐ¶ÏÂ·¾¶µã")]
     public Transform p2; // ×´Ì¬2´¥·¢µã
     public Transform p3; // ×´Ì¬3´¥·¢µã
     public float positionTolerance = 0.1f;
+    [Header("Í¼Æ¬")]
+    public Sprite[] imgs;
+    public GameObject smoke;
 
-    public static bool isdie=false;
+    private SpriteRenderer sr;
+    private Status status;
+
+    //public static bool isdie=false;
+
+    private void Start()
+    {
+        sr=gameObject.GetComponent<SpriteRenderer>();
+        status = Status.S0;
+        SwitchStatus(status);
+        smoke.SetActive(false);
+    }
 
     void Update()
     {
@@ -21,6 +43,9 @@ public class airconditioning : MonoBehaviour
             if (type != 0)
             {
                 type = 0;
+                status = Status.S0;
+                SwitchStatus(status);
+                smoke.SetActive(false);
                 Debug.Log("ÎÞó¯òë´æÔÚ ¡ú ×´Ì¬0");
             }
             return;
@@ -30,6 +55,9 @@ public class airconditioning : MonoBehaviour
         if (type == 0)
         {
             type = 1;
+            status = Status.S1;
+            SwitchStatus(status);
+            smoke.SetActive(false);
             Debug.Log("ó¯òë³öÉú ¡ú ×´Ì¬1");
         }
 
@@ -41,6 +69,9 @@ public class airconditioning : MonoBehaviour
                 if (Vector3.Distance(roach.transform.position, p2.position) <= positionTolerance)
                 {
                     type = 2;
+                    status = Status.S2;
+                    SwitchStatus(status);
+                    smoke.SetActive(true);
                     Debug.Log("ÓÐó¯òëµ½´ï position2 ¡ú ×´Ì¬2");
                     break;
                 }
@@ -55,11 +86,19 @@ public class airconditioning : MonoBehaviour
                 if (Vector3.Distance(roach.transform.position, p3.position) <= positionTolerance)
                 {
                     type = 3;
+                    status = Status.S3;
+                    SwitchStatus(status);
+                    smoke.SetActive(false);
                     Debug.Log("ÓÐó¯òëµ½´ï position3 ¡ú ×´Ì¬3");
-                    isdie = true;
+                    //isdie = true;
                     break;
                 }
             }
         }
+    }
+
+    void SwitchStatus(Status newStatus)
+    {
+        sr.sprite = imgs[(int)newStatus];
     }
 }
