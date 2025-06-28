@@ -2,34 +2,34 @@ using UnityEngine;
 
 public class SayClick : MonoBehaviour
 {
-    public firge firgeScript;         // ÍÏÈë frige ½Å±¾
-    public GameObject dialogueUI;     // ÍÏÈë dialogue ¶ÔÏó£¨UI£©
-    public RectTransform selection1;  // ÍÏÈë selection1 µÄ RectTransform
-    public RectTransform selection2;  // ÍÏÈë selection2 µÄ RectTransform
+    public firge firgeScript;         // æ‹–å…¥ frige è„šæœ¬
+    public GameObject dialogueUI;     // æ‹–å…¥ dialogue å¯¹è±¡ï¼ˆUIï¼‰
+    public RectTransform selection1;  // æ‹–å…¥ selection1 çš„ RectTransform
+    public RectTransform selection2;  // æ‹–å…¥ selection2 çš„ RectTransform
 
     private void OnMouseDown()
     {
         if (firgeScript != null)
         {
-            firgeScript.PauseAngerGrowth(); // ÔİÍ£Å­ÆøÖµ
+            firgeScript.PauseAngerGrowth(); // æš‚åœæ€’æ°”å€¼
         }
 
         if (dialogueUI != null)
         {
-            dialogueUI.SetActive(true);     // ÏÔÊ¾¶Ô»°¿ò
+            dialogueUI.SetActive(true);     // æ˜¾ç¤ºå¯¹è¯æ¡†
 
-            // 50% ¸ÅÂÊ½»»»Á½¸ö°´Å¥µÄÎ»ÖÃ
+            // 50% æ¦‚ç‡äº¤æ¢ä¸¤ä¸ªæŒ‰é’®çš„ä½ç½®
             if (Random.value < 0.5f && selection1 != null && selection2 != null)
             {
                 Vector3 tempPos = selection1.anchoredPosition;
                 selection1.anchoredPosition = selection2.anchoredPosition;
                 selection2.anchoredPosition = tempPos;
 
-                Debug.Log("°´Å¥Î»ÖÃÒÑ½»»»");
+                Debug.Log("æŒ‰é’®ä½ç½®å·²äº¤æ¢");
             }
             else
             {
-                Debug.Log("°´Å¥Î»ÖÃÎ´½»»»");
+                Debug.Log("æŒ‰é’®ä½ç½®æœªäº¤æ¢");
             }
         }
     }

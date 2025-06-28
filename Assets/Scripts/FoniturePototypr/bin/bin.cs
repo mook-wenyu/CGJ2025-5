@@ -3,16 +3,16 @@ using UnityEngine;
 
 public class bin : MonoBehaviour
 {
-    public int type = 0;               // ¼Ò¾ß×´Ì¬
-    public int anger = 0;              // ·ßÅ­Öµ
-    public float negativespeed = 1f;   // ÇéĞ÷»ıÀÛËÙ¶È£¨Ãë£©
+    public int type = 0;               // å®¶å…·çŠ¶æ€
+    public int anger = 0;              // æ„¤æ€’å€¼
+    public float negativespeed = 1f;   // æƒ…ç»ªç§¯ç´¯é€Ÿåº¦ï¼ˆç§’ï¼‰
 
     private bool hasStartedDelay = false;
     private bool isCoolingDown = false;
 
     private int directionChangeCount = 0;
     private Vector3 lastMousePos;
-    private int lastDirection = 0; // -1:×ó, 1:ÓÒ, 0:Î´¶¨
+    private int lastDirection = 0; // -1:å·¦, 1:å³, 0:æœªå®š
 
     void Start()
     {
@@ -27,7 +27,7 @@ public class bin : MonoBehaviour
         {
             hasStartedDelay = true;
             float delay = Random.Range(1f, 10f);
-            Debug.Log($"×´Ì¬0£º½«ÔÚ {delay:F1} Ãëºó½øÈë×´Ì¬1");
+            Debug.Log($"çŠ¶æ€0ï¼šå°†åœ¨ {delay:F1} ç§’åè¿›å…¥çŠ¶æ€1");
             StartCoroutine(DelayToState1(delay));
         }
     }
@@ -41,21 +41,21 @@ public class bin : MonoBehaviour
         {
             case 1:
                 anger++;
-                Debug.Log($"×´Ì¬1£º·ßÅ­Öµ = {anger}");
+                Debug.Log($"çŠ¶æ€1ï¼šæ„¤æ€’å€¼ = {anger}");
                 if (anger >= 60)
                 {
                     type = 2;
-                    Debug.Log("½øÈë×´Ì¬2£º¼Ò¾ß¿ªÊ¼Õğ¶¯");
+                    Debug.Log("è¿›å…¥çŠ¶æ€2ï¼šå®¶å…·å¼€å§‹éœ‡åŠ¨");
                 }
                 break;
 
             case 2:
                 anger++;
-                Debug.Log($"×´Ì¬2£º·ßÅ­Öµ = {anger}");
+                Debug.Log($"çŠ¶æ€2ï¼šæ„¤æ€’å€¼ = {anger}");
                 if (anger >= 100)
                 {
                     type = 3;
-                    Debug.Log("½øÈë×´Ì¬3£º¼Ò¾ß±©×ß£¡");
+                    Debug.Log("è¿›å…¥çŠ¶æ€3ï¼šå®¶å…·æš´èµ°ï¼");
                 }
                 break;
         }
@@ -65,13 +65,13 @@ public class bin : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         type = 1;
-        Debug.Log("×´Ì¬0µ¹¼ÆÊ±½áÊø£¬½øÈë×´Ì¬1£º¿ªÊ¼»ıÀÛ·ßÅ­");
+        Debug.Log("çŠ¶æ€0å€’è®¡æ—¶ç»“æŸï¼Œè¿›å…¥çŠ¶æ€1ï¼šå¼€å§‹ç§¯ç´¯æ„¤æ€’");
     }
 
     void CoolDownToZero()
     {
         isCoolingDown = true;
-        Debug.Log("»¬¶¯±äÏò3´Î£¬Å­ÆøÁ¢¼´ÇåÁã...");
+        Debug.Log("æ»‘åŠ¨å˜å‘3æ¬¡ï¼Œæ€’æ°”ç«‹å³æ¸…é›¶...");
 
         type = 0;
         anger = 0;
@@ -80,7 +80,7 @@ public class bin : MonoBehaviour
         isCoolingDown = false;
         hasStartedDelay = false;
 
-        Debug.Log("Å­ÆøÇåÁã£¬×´Ì¬»Øµ½0£¬µÈ´ıÖØĞÂ½øÈë×´Ì¬1");
+        Debug.Log("æ€’æ°”æ¸…é›¶ï¼ŒçŠ¶æ€å›åˆ°0ï¼Œç­‰å¾…é‡æ–°è¿›å…¥çŠ¶æ€1");
     }
 
     void OnMouseOver()
@@ -93,14 +93,14 @@ public class bin : MonoBehaviour
                 float dx = currentMousePos.x - lastMousePos.x;
 
                 int currentDirection = 0;
-                if (Mathf.Abs(dx) > 20f) // »¬¶¯³¬¹ı20ÏñËØ²ÅÅĞ¶¨
+                if (Mathf.Abs(dx) > 20f) // æ»‘åŠ¨è¶…è¿‡20åƒç´ æ‰åˆ¤å®š
                 {
                     currentDirection = dx > 0 ? 1 : -1;
 
                     if (lastDirection != 0 && currentDirection != lastDirection)
                     {
                         directionChangeCount++;
-                        Debug.Log($"»¬¶¯·½Ïò¸Ä±ä£¬µÚ {directionChangeCount} ´Î");
+                        Debug.Log($"æ»‘åŠ¨æ–¹å‘æ”¹å˜ï¼Œç¬¬ {directionChangeCount} æ¬¡");
                     }
 
                     lastDirection = currentDirection;

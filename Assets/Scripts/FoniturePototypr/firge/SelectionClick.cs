@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class SelectionClick : MonoBehaviour
 {
-    public firge firgeScript;         // ÍÏÈë frige ½Å±¾
-    public GameObject dialogueUI;     // ÍÏÈë dialogue ¶ÔÏó£¨UI£©
+    public firge firgeScript;         // æ‹–å…¥ frige è„šæœ¬
+    public GameObject dialogueUI;     // æ‹–å…¥ dialogue å¯¹è±¡ï¼ˆUIï¼‰
 
     public void OnClickSelection()
     {
         if (firgeScript != null)
         {
-            firgeScript.ResetToCalm(); // Çå¿ÕÅ­Æø & ×´Ì¬¹éÁã
+            firgeScript.ResetToCalm(); // æ¸…ç©ºæ€’æ°” & çŠ¶æ€å½’é›¶
         }
 
         if (dialogueUI != null)
         {
-            dialogueUI.SetActive(false); // ¹Ø±Õ¶Ô»°¿ò
+            dialogueUI.SetActive(false); // å…³é—­å¯¹è¯æ¡†
         }
     }
 }

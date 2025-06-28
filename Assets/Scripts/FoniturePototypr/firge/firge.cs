@@ -3,37 +3,37 @@ using UnityEngine;
 
 public class firge : MonoBehaviour
 {
-    [Header("×´Ì¬ÀàĞÍ")]
-    public int type = 0;               // ¼Ò¾ß×´Ì¬
+    [Header("çŠ¶æ€ç±»å‹")]
+    public int type = 0;               // å®¶å…·çŠ¶æ€
 
-    [Header("ÏÖÔÚµÄ·ßÅ­Öµ")]
-    public int anger = 0;              // ·ßÅ­Öµ
+    [Header("ç°åœ¨çš„æ„¤æ€’å€¼")]
+    public int anger = 0;              // æ„¤æ€’å€¼
 
-    [Header("·ßÅ­ÖµÔö³¤ËÙ¶È(xÃëÔö³¤1)")]
-    public float negativespeed = 1f;   // ÇéĞ÷»ıÀÛËÙ¶È£¨Ãë£©
+    [Header("æ„¤æ€’å€¼å¢é•¿é€Ÿåº¦(xç§’å¢é•¿1)")]
+    public float negativespeed = 1f;   // æƒ…ç»ªç§¯ç´¯é€Ÿåº¦ï¼ˆç§’ï¼‰
 
-    [Header("´¥·¢¼ä¸ô")]
+    [Header("è§¦å‘é—´éš”")]
     public float starttime = 1f;
     public float endtime = 10f;
 
-    [Header("×´Ì¬»ùÏßÖµ")]
+    [Header("çŠ¶æ€åŸºçº¿å€¼")]
     public int startanger = 0;
 
-    [Header("½×¶ÎãĞÖµ")]
+    [Header("é˜¶æ®µé˜ˆå€¼")]
     public int stage2 = 50;
     public int stage3 = 100;
 
     private bool hasStartedDelay = false;
     private bool isCoolingDown = false;
-    private bool isPaused = false;     // ÊÇ·ñÔİÍ£Ôö³¤
+    private bool isPaused = false;     // æ˜¯å¦æš‚åœå¢é•¿
     private bool isReady = false;
     private bool isFirst_time_to_wait=false;
 
-    [Header("¿ªÊ¼µÈ´ıÊ±¼ä")]
+    [Header("å¼€å§‹ç­‰å¾…æ—¶é—´")]
     public float waittime = 10f;
 
-    [Header("ÒıÓÃÎïÌå")]
-    public GameObject sayObj;          // ×ÓÎïÌå say µÄÒıÓÃ
+    [Header("å¼•ç”¨ç‰©ä½“")]
+    public GameObject sayObj;          // å­ç‰©ä½“ say çš„å¼•ç”¨
     public GameObject dialogueUI;
 
     void Start()
@@ -42,17 +42,17 @@ public class firge : MonoBehaviour
         anger = startanger;
 
         if (sayObj != null)
-            sayObj.SetActive(false); // ³õÊ¼Òş²Ø
+            sayObj.SetActive(false); // åˆå§‹éšè—
         dialogueUI.SetActive(false);
 
         StartCoroutine(StartDelayed());
     }
     IEnumerator StartDelayed()
     {
-        Debug.Log($"µÈ´ı {waittime} Ãëºó¿ªÊ¼ÔËĞĞ");
+        Debug.Log($"ç­‰å¾… {waittime} ç§’åå¼€å§‹è¿è¡Œ");
         yield return new WaitForSeconds(waittime);
 
-        // µÈ´ı½áÊøºó¿ªÊ¼Ö´ĞĞÂß¼­
+        // ç­‰å¾…ç»“æŸåå¼€å§‹æ‰§è¡Œé€»è¾‘
         InvokeRepeating(nameof(StateTick), 0f, negativespeed);
         isFirst_time_to_wait = true;
         isReady=true;
@@ -60,17 +60,18 @@ public class firge : MonoBehaviour
     }
     void Update()
     {
-        if (!isReady) return;  // Ã»µÈ¹»Ê±¼ä£¬²»ÔËĞĞÂß¼­
+        if (!isReady) return;  // æ²¡ç­‰å¤Ÿæ—¶é—´
 
         if (!hasStartedDelay && !isCoolingDown && type == 0 && anger == startanger)
         {
             hasStartedDelay = true;
             float delay = Random.Range(starttime, endtime);
-            if(isFirst_time_to_wait=true)
+            if(isFirst_time_to_wait==true)
             {
                 delay = 0f;
+                isFirst_time_to_wait = false;
             }
-            Debug.Log($"×´Ì¬0£º½«ÔÚ {delay:F1} Ãëºó½øÈë×´Ì¬1");
+            Debug.Log($"çŠ¶æ€0ï¼šå°†åœ¨ {delay:F1} ç§’åè¿›å…¥çŠ¶æ€1");
             StartCoroutine(DelayToState1(delay));
         }
     }
@@ -92,21 +93,21 @@ public class firge : MonoBehaviour
                     sayObj.SetActive(true);
 
                 anger++;
-                Debug.Log($"×´Ì¬1£º·ßÅ­Öµ = {anger}");
+                Debug.Log($"çŠ¶æ€1ï¼šæ„¤æ€’å€¼ = {anger}");
                 if (anger >= 60)
                 {
                     type = 2;
-                    Debug.Log("½øÈë×´Ì¬2£º¼Ò¾ß¿ªÊ¼Õğ¶¯");
+                    Debug.Log("è¿›å…¥çŠ¶æ€2ï¼šå®¶å…·å¼€å§‹éœ‡åŠ¨");
                 }
                 break;
 
             case 2:
                 anger++;
-                Debug.Log($"×´Ì¬2£º·ßÅ­Öµ = {anger}");
+                Debug.Log($"çŠ¶æ€2ï¼šæ„¤æ€’å€¼ = {anger}");
                 if (anger >= 100)
                 {
                     type = 3;
-                    Debug.Log("½øÈë×´Ì¬3£º¼Ò¾ß±©×ß£¡");
+                    Debug.Log("è¿›å…¥çŠ¶æ€3ï¼šå®¶å…·æš´èµ°ï¼");
                 }
                 break;
         }
@@ -116,19 +117,19 @@ public class firge : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         type = 1;
-        Debug.Log("×´Ì¬0µ¹¼ÆÊ±½áÊø£¬½øÈë×´Ì¬1£º¿ªÊ¼»ıÀÛ·ßÅ­");
+        Debug.Log("çŠ¶æ€0å€’è®¡æ—¶ç»“æŸï¼Œè¿›å…¥çŠ¶æ€1ï¼šå¼€å§‹ç§¯ç´¯æ„¤æ€’");
     }
 
-    //  ½»»¥ĞĞÎª£º
+    //  äº¤äº’è¡Œä¸ºï¼š
     public void PauseAngerGrowth()
     {
         isPaused = true;
-        Debug.Log(isPaused ? "ÒÑÔİÍ£Å­ÆøÔö³¤" : "Å­Æø»Ö¸´Ôö³¤");
+        Debug.Log(isPaused ? "å·²æš‚åœæ€’æ°”å¢é•¿" : "æ€’æ°”æ¢å¤å¢é•¿");
     }
 
     public void ResetToCalm()
     {
-        Debug.Log("µã»÷ say£ºÅ­ÆøÇåÁã£¬»Øµ½×´Ì¬0");
+        Debug.Log("ç‚¹å‡» sayï¼šæ€’æ°”æ¸…é›¶ï¼Œå›åˆ°çŠ¶æ€0");
 
         type = 0;
         anger = startanger;

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class poto : MonoBehaviour
 {
-    public int type = 0;               // ¼Ò¾ß×´Ì¬
-    public int anger = 0;              // ·ßÅ­Öµ
-    public float negativespeed = 1f;   // ÇéĞ÷»ıÀÛËÙ¶È£¨Ãë£©
+    public int type = 0;               // å®¶å…·çŠ¶æ€
+    public int anger = 0;              // æ„¤æ€’å€¼
+    public float negativespeed = 1f;   // æƒ…ç»ªç§¯ç´¯é€Ÿåº¦ï¼ˆç§’ï¼‰
 
     private bool hasStartedDelay = false;
     private int clickCount = 0;
@@ -22,21 +22,21 @@ public class poto : MonoBehaviour
 
     void Update()
     {
-        // ×´Ì¬1~3Ê±ÔÊĞí½»»¥
+        // çŠ¶æ€1~3æ—¶å…è®¸äº¤äº’
         if (!isCoolingDown && type >= 1 && type <= 2)
         {
             if (Input.GetMouseButtonDown(0))
             {
-                InteractEvent(); // ´¥·¢½»»¥ÊÂ¼ş
+                InteractEvent(); // è§¦å‘äº¤äº’äº‹ä»¶
             }
         }
 
-        // ×´Ì¬»Ö¸´Âß¼­
+        // çŠ¶æ€æ¢å¤é€»è¾‘
         if (!hasStartedDelay && !isCoolingDown && type == 0 && anger == 0)
         {
             hasStartedDelay = true;
             float delay = Random.Range(1f, 10f);
-            Debug.Log($"×´Ì¬0£º½«ÔÚ {delay:F1} Ãëºó½øÈë×´Ì¬1");
+            Debug.Log($"çŠ¶æ€0ï¼šå°†åœ¨ {delay:F1} ç§’åè¿›å…¥çŠ¶æ€1");
             StartCoroutine(DelayToState1(delay));
         }
     }
@@ -51,21 +51,21 @@ public class poto : MonoBehaviour
         {
             case 1:
                 anger++;
-                Debug.Log($"×´Ì¬1£º·ßÅ­Öµ = {anger}");
+                Debug.Log($"çŠ¶æ€1ï¼šæ„¤æ€’å€¼ = {anger}");
                 if (anger >= 60)
                 {
                     type = 2;
-                    Debug.Log("½øÈë×´Ì¬2£º¼Ò¾ß¿ªÊ¼Õğ¶¯");
+                    Debug.Log("è¿›å…¥çŠ¶æ€2ï¼šå®¶å…·å¼€å§‹éœ‡åŠ¨");
                 }
                 break;
 
             case 2:
                 anger++;
-                Debug.Log($"×´Ì¬2£º·ßÅ­Öµ = {anger}");
+                Debug.Log($"çŠ¶æ€2ï¼šæ„¤æ€’å€¼ = {anger}");
                 if (anger >= 100)
                 {
                     type = 3;
-                    Debug.Log("½øÈë×´Ì¬3£º¼Ò¾ß±©×ß£¡");
+                    Debug.Log("è¿›å…¥çŠ¶æ€3ï¼šå®¶å…·æš´èµ°ï¼");
                     return;
                 }
                 break;
@@ -78,7 +78,7 @@ public class poto : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         type = 1;
-        Debug.Log("×´Ì¬0µ¹¼ÆÊ±½áÊø£¬½øÈë×´Ì¬1£º¿ªÊ¼»ıÀÛ·ßÅ­");
+        Debug.Log("çŠ¶æ€0å€’è®¡æ—¶ç»“æŸï¼Œè¿›å…¥çŠ¶æ€1ï¼šå¼€å§‹ç§¯ç´¯æ„¤æ€’");
     }
 
 
@@ -87,7 +87,7 @@ public class poto : MonoBehaviour
     void CoolDownToZero()
     {
         isCoolingDown = true;
-        Debug.Log("µã»÷3´Î£¬Å­ÆøÁ¢¼´ÇåÁã...");
+        Debug.Log("ç‚¹å‡»3æ¬¡ï¼Œæ€’æ°”ç«‹å³æ¸…é›¶...");
 
         type = 0;
         anger = 0;
@@ -95,21 +95,21 @@ public class poto : MonoBehaviour
         isCoolingDown = false;
         hasStartedDelay = false;
 
-        Debug.Log("Å­ÆøÇåÁã£¬×´Ì¬»Øµ½0£¬µÈ´ıÖØĞÂ½øÈë×´Ì¬1");
+        Debug.Log("æ€’æ°”æ¸…é›¶ï¼ŒçŠ¶æ€å›åˆ°0ï¼Œç­‰å¾…é‡æ–°è¿›å…¥çŠ¶æ€1");
     }
     public void InteractEvent()
     {
         if (clickTimer <= 0f)
         {
-            // µÚÒ»´Îµã»÷£¬Æô¶¯¼ÆÊ±Æ÷
+            // ç¬¬ä¸€æ¬¡ç‚¹å‡»ï¼Œå¯åŠ¨è®¡æ—¶å™¨
             clickTimer = 3f;
             clickCount = 1;
-            Debug.Log("¿ªÊ¼¼ÆÊ±£¬µã»÷1´Î");
+            Debug.Log("å¼€å§‹è®¡æ—¶ï¼Œç‚¹å‡»1æ¬¡");
         }
         else
         {
             clickCount++;
-            Debug.Log($"ÒÑµã»÷ {clickCount} ´Î");
+            Debug.Log($"å·²ç‚¹å‡» {clickCount} æ¬¡");
 
             if (clickCount >= 3)
             {
@@ -120,7 +120,7 @@ public class poto : MonoBehaviour
             }
         }
 
-        // ¼ÌĞøµ¹¼ÆÊ±£¨Ö»Òªµã»÷¾ÍÖ´ĞĞ£©
+        // ç»§ç»­å€’è®¡æ—¶ï¼ˆåªè¦ç‚¹å‡»å°±æ‰§è¡Œï¼‰
         StartCoroutine(ClickTimerCountdown());
     }
     private IEnumerator ClickTimerCountdown()
@@ -132,13 +132,13 @@ public class poto : MonoBehaviour
             yield return null;
             clickTimer -= Time.deltaTime;
 
-            // ÌáÇ°ÍË³öÈç¹ûµã»÷Êı±»Çå¿Õ
+            // æå‰é€€å‡ºå¦‚æœç‚¹å‡»æ•°è¢«æ¸…ç©º
             if (clickCount == 0) yield break;
         }
 
-        // Ê±¼äµ½£¬µã»÷Î´Íê³É ¡ú ÖØÖÃµã»÷Êı
+        // æ—¶é—´åˆ°ï¼Œç‚¹å‡»æœªå®Œæˆ â†’ é‡ç½®ç‚¹å‡»æ•°
         clickCount = 0;
         clickTimer = 0f;
-        Debug.Log("µã»÷³¬Ê±£¬ÖØÖÃµã»÷´ÎÊı");
+        Debug.Log("ç‚¹å‡»è¶…æ—¶ï¼Œé‡ç½®ç‚¹å‡»æ¬¡æ•°");
     }
 }
