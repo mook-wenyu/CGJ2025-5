@@ -1,0 +1,5 @@
+﻿唯一标识,名称,位置,特性,表情
+id,name,pos,trait,emotion
+string,string,string,string,string[]
+1001,名称,位置,特性,"表情,表情"
+1002,名称,位置,特性,表情

@@ -41,3 +41,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: BedroomUI
+    uniqueID: 227692509
+    locked: 0
+  - name: Bedroom
+    uniqueID: 2393958443
+    locked: 0
+  - name: KitchenUI
+    uniqueID: 1750184067
+    locked: 0
+  - name: Kitchen
+    uniqueID: 2405755739
+    locked: 0
+  - name: TopUI
+    uniqueID: 2209031375
+    locked: 0
