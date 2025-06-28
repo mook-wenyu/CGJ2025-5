@@ -75,10 +75,10 @@ public class Kettle : MonoBehaviour
         {
             hasStartedDelay = true;
             float delay = Random.Range(1f, 10f);
-            if(isFirst_time_to_wait)
+            if (isFirst_time_to_wait)
             {
                 delay = 0f;
-                isFirst_time_to_wait= false;
+                isFirst_time_to_wait = false;
             }
             Debug.Log($"状态0：将在 {delay:F1} 秒后进入状态1");
             StartCoroutine(DelayToState1(delay));
@@ -97,7 +97,7 @@ public class Kettle : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if(type >= 1 && type <= 2)
+        if (type >= 1 && type <= 2)
         {
             InteractEvent();
         }
@@ -145,6 +145,7 @@ public class Kettle : MonoBehaviour
         type = 1;
         status = Status.S1;
         SwitchStatus(status);
+        hasStartedDelay = false;
         Debug.Log("状态0倒计时结束，进入状态1：开始积累愤怒");
     }
 
@@ -154,11 +155,10 @@ public class Kettle : MonoBehaviour
         anger = 0;
         status = Status.S0;
         SwitchStatus(status);
-        hasStartedDelay = false;
     }
     public void InteractEvent()
     {
-        CoolDownToZero();  
+        CoolDownToZero();
     }
 
     void SwitchStatus(Status newStatus)
