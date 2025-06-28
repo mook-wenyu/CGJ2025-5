@@ -22,7 +22,8 @@ public class CockroachSpawner : MonoBehaviour
     IEnumerator StartDelayed()
     {
         Debug.Log($"等待 {waitTime} 秒后开始运行");
-        yield return new WaitForSeconds(waitTime);
+        yield return null;
+        //yield return new WaitForSeconds(waitTime);
         // 等待结束后开始执行逻辑
         StartCoroutine(SpawnCockroachLoop());
         GameObject roach = Instantiate(cockroachPrefab, pathPoints[0].position, Quaternion.identity);

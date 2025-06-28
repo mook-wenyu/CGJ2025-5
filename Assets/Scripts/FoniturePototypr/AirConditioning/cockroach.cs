@@ -21,6 +21,8 @@ public class cockroach : MonoBehaviour
 
     private Coroutine moveCoroutine;
 
+    private bool isfly = false;
+
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
@@ -37,8 +39,17 @@ public class cockroach : MonoBehaviour
 
     IEnumerator MoveAlongPath()
     {
-        for (int i = 1; i < positions.Length; i++)
+        for (int i = 0; i < positions.Length; i++)
         {
+            if (isfly)
+            {
+                status = Status.Fly;
+                SwitchStatus(status);
+            }
+            else
+            {
+                isfly = Random.value <= 0.2 * i;
+            }
             Vector3 target = positions[i].position;
 
             while (Vector3.Distance(transform.position, target) > 0.05f)
@@ -81,6 +92,16 @@ public class cockroach : MonoBehaviour
 
         if (moveCoroutine != null)
             StopCoroutine(moveCoroutine);
+        if(status==Status.Move)
+        {
+            status = Status.Die;
+            SwitchStatus(status);
+        }
+        else if (status==Status.Fly)
+        {
+            status = Status.FlyDie;
+            SwitchStatus(status);
+        }
 
         StartCoroutine(DestroyAfterDelay(1.5f));
     }
@@ -93,7 +114,6 @@ public class cockroach : MonoBehaviour
 
     void SwitchStatus(Status newStatus)
     {
-        status = newStatus;
-        sr.sprite = imgs[(int)status];
+        sr.sprite = imgs[(int)newStatus];
     }
 }
