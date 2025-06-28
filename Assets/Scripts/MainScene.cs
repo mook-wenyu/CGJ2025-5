@@ -16,7 +16,7 @@ public class MainScene : MonoBehaviour
     public GameObject initStartPanel;
     public Image startImg;
 
-    private IEnumerator fadeInOutLoop;
+    private Coroutine fadeInOutLoop;
 
 
     private void Awake()
@@ -42,7 +42,7 @@ public class MainScene : MonoBehaviour
         image.color = new Color(0, 0, 0, 1f);
         Tween.Alpha(image, 0, 0.2f).OnComplete(() =>
         {
-            Tween.LocalPositionX(mainMenu.transform, -1200, 0.8f, ease: Ease.InOutCirc).OnComplete(() =>
+            Tween.LocalPositionX(mainMenu.transform, -1600, 0.8f, ease: Ease.InOutCirc).OnComplete(() =>
             {
                 mainMenu.SetActive(false);
             });
@@ -51,8 +51,7 @@ public class MainScene : MonoBehaviour
                 bgPanel.SetActive(false);
 
                 initStartPanel.SetActive(true);
-                fadeInOutLoop = FadeInOutLoop();
-                StartCoroutine(fadeInOutLoop);
+                fadeInOutLoop = StartCoroutine(FadeInOutLoop());
             });
             maskBg.SetActive(false);
         });
@@ -81,6 +80,8 @@ public class MainScene : MonoBehaviour
         Tween.LocalPositionX(initStartPanel.transform, -Screen.width, 0.5f, ease: Ease.InOutCirc).OnComplete(() =>
         {
             initStartPanel.SetActive(false);
+
+            WorldSceneRoot.Instance.ResetWorld(Utils.currentLevel);
         });
     }
 }

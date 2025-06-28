@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using PrimeTween;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,6 +11,9 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
     public GameObject fgPanel;
 
     public GameObject victoryPanel;
+    public Scrollbar levelProgressScrollbar;
+    public TextMeshProUGUI levelProgressText;
+
     public GameObject failPanel;
     public Button tryAgainBtn;
     public Button backMainMenuBtn;
@@ -34,20 +38,20 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
         failPanel.SetActive(false);
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public void ShowVictoryPanel()
     {
-
-    }
-
-    public void Show()
-    {
+        victoryPanel.transform.localPosition = new Vector2(1920, 0);
         fgPanel.transform.localPosition = new Vector2(2660, 0);
+        victoryPanel.SetActive(true);
         fgPanel.SetActive(true);
-        Tween.LocalPositionX(fgPanel.transform, 0, 0.5f, ease: Ease.InOutCirc).OnComplete(() =>
+
+        if (Utils.currentLevel < 7)
         {
-            victoryPanel.SetActive(true);
-        });
+            levelProgressScrollbar.value = progress[Utils.currentLevel];
+            levelProgressText.text = GetLevelProgressText(Utils.currentLevel + 1);
+        }
+        Tween.LocalPositionX(victoryPanel.transform, 0, 0.5f, ease: Ease.InOutCirc);
+        Tween.LocalPositionX(fgPanel.transform, 0, 0.5f, ease: Ease.InOutCirc);
     }
 
     void OnVictoryPanel()
@@ -59,12 +63,19 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
         Tween.LocalPositionX(victoryPanel.transform, -1920, 0.5f, ease: Ease.InOutCirc).OnComplete(() =>
         {
             victoryPanel.SetActive(false);
+            NextLevel();
         });
+    }
+
+    public void ShowFailPanel()
+    {
+        failPanel.SetActive(true);
     }
 
     void OnTryAgainBtn()
     {
-        ResetLevel();
+        failPanel.SetActive(false);
+        WorldSceneRoot.Instance.ResetWorld(Utils.currentLevel);
     }
 
     void OnBackMainMenuBtn()
@@ -72,13 +83,24 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
         SceneManager.LoadScene("StartScene");
     }
 
-    public void ResetLevel()
-    {
-
-    }
-
-    public void NextLevel()
+    void NextLevel()
     {
         Utils.currentLevel++;
+        WorldSceneRoot.Instance.ResetWorld(Utils.currentLevel);
+    }
+
+    string GetLevelProgressText(int level)
+    {
+        return level switch
+        {
+            1 => "第一关",
+            2 => "第二关",
+            3 => "第三关",
+            4 => "第四关",
+            5 => "第五关",
+            6 => "第六关",
+            7 => "第七关",
+            _ => "",
+        };
     }
 }
