@@ -25,7 +25,7 @@ public class Object : MonoBehaviour
             SpriteRenderer sr = son.GetComponent<SpriteRenderer>();
             if (sr != null)
             {
-                sr.sortingOrder = 1;
+                sr.sortingOrder = 9;
             }
         }
     }
@@ -38,7 +38,7 @@ public class Object : MonoBehaviour
             SpriteRenderer sr = son.GetComponent<SpriteRenderer>();
             if (sr != null)
             {
-                sr.sortingOrder = 3;
+                sr.sortingOrder = 11;
             }
         }
     }

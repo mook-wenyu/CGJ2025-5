@@ -13,7 +13,7 @@ public class head : MonoBehaviour
     void Start()
     {
         originalPos = transform.localPosition;
-        gameObject.SetActive(false); // ³õÊ¼²»ÏÔÊ¾
+        gameObject.SetActive(false); // åˆå§‹ä¸æ˜¾ç¤º
     }
 
     public void StartShaking(int type)

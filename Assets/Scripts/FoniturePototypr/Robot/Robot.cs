@@ -7,32 +7,32 @@ public class Robot : MonoBehaviour
 
     private SpriteRenderer sr;
 
-    [Header("Í¼Æ¬")]
+    [Header("å›¾ç‰‡")]
     public Sprite[] imgs;
 
-    [Header("×´Ì¬ÀàĞÍ")]
+    [Header("çŠ¶æ€ç±»å‹")]
     public int type = 0;
 
-    [Header("ÏÖÔÚµÄ·ßÅ­Öµ")]
+    [Header("ç°åœ¨çš„æ„¤æ€’å€¼")]
     public int anger = 0;
 
-    [Header("·ßÅ­ÖµÔö³¤ËÙ¶È(xÃëÔö³¤1)")]
+    [Header("æ„¤æ€’å€¼å¢é•¿é€Ÿåº¦(xç§’å¢é•¿1)")]
     public float negativespeed = 1f;
 
-    [Header("½×¶ÎãĞÖµ")]
+    [Header("é˜¶æ®µé˜ˆå€¼")]
     public int stage2 = 50;
     public int stage3 = 100;
 
-    [Header("¿ªÊ¼µÈ´ıÊ±¼ä")]
+    [Header("å¼€å§‹ç­‰å¾…æ—¶é—´")]
     public float waittime = 10f;
 
-    [Header("·ßÅ­Öµ»ùÏß")]
+    [Header("æ„¤æ€’å€¼åŸºçº¿")]
     public int startanger = 0;
 
-    [Header("ËùÓĞÄ¿±êÎ»ÖÃ")]
+    [Header("æ‰€æœ‰ç›®æ ‡ä½ç½®")]
     public Transform[] positions;
 
-    [Header("ÒÆ¶¯ËÙ¶È")]
+    [Header("ç§»åŠ¨é€Ÿåº¦")]
     public float speed = 2f;
 
     private bool isFirstTimeWait = false;
@@ -52,7 +52,7 @@ public class Robot : MonoBehaviour
 
     IEnumerator InitialWait()
     {
-        Debug.Log($"Ê×´ÎÆô¶¯£¬µÈ´ı {waittime} Ãë");
+        Debug.Log($"é¦–æ¬¡å¯åŠ¨ï¼Œç­‰å¾… {waittime} ç§’");
         yield return new WaitForSeconds(waittime);
         isFirstTimeWait = true;
         StartCoroutine(IdleAndMoveLoop());
@@ -60,7 +60,7 @@ public class Robot : MonoBehaviour
 
     IEnumerator IdleAndMoveLoop()
     {
-         // ¼ÇÂ¼ÉÏÒ»´ÎµÄË÷Òı
+         // è®°å½•ä¸Šä¸€æ¬¡çš„ç´¢å¼•
 
         while (true)
         {
@@ -72,7 +72,7 @@ public class Robot : MonoBehaviour
                 delay = 0f;
                 isFirstTimeWait = false;
             }
-            Debug.Log($"¿ÕÏĞ×´Ì¬£ºµÈ´ı {delay:F1} ÃëºóÒÆ¶¯");
+            Debug.Log($"ç©ºé—²çŠ¶æ€ï¼šç­‰å¾… {delay:F1} ç§’åç§»åŠ¨");
             yield return new WaitForSeconds(delay);
 
             if (positions.Length == 0) yield break;
@@ -81,7 +81,7 @@ public class Robot : MonoBehaviour
             do
             {
                 newIndex = Random.Range(0, positions.Length);
-            } while (positions.Length > 1 && newIndex == lastIndex); // ±ÜÃâºÍÉÏ´ÎÒ»Ñù
+            } while (positions.Length > 1 && newIndex == lastIndex); // é¿å…å’Œä¸Šæ¬¡ä¸€æ ·
 
             lastIndex = newIndex;
             Transform target = positions[newIndex];
@@ -103,12 +103,12 @@ public class Robot : MonoBehaviour
             yield return null;
         }
         yield return new WaitForSeconds(0.5f);
-        Debug.Log("ÒÑµ½´ïÄ¿±êµã£¬½øÈë×´Ì¬1");
+        Debug.Log("å·²åˆ°è¾¾ç›®æ ‡ç‚¹ï¼Œè¿›å…¥çŠ¶æ€1");
         orderCtrl = target.GetComponent<Object>();
         if (orderCtrl != null)
         {
             orderCtrl.SetSonOrderToBottom();
-            Debug.Log("µ÷ÓÃ SetSonOrderToBottom ³É¹¦");
+            Debug.Log("è°ƒç”¨ SetSonOrderToBottom æˆåŠŸ");
         }
 
         type = 1;
@@ -121,7 +121,7 @@ public class Robot : MonoBehaviour
     {
         if (type == 1 || type == 2)
         {
-            Debug.Log("µã»÷¼Ò¾ß£ºÖØÖÃÎª×´Ì¬0");
+            Debug.Log("ç‚¹å‡»å®¶å…·ï¼šé‡ç½®ä¸ºçŠ¶æ€0");
             ResetToIdle();
         }
     }
@@ -131,25 +131,25 @@ public class Robot : MonoBehaviour
         if (type == 1)
         {
             anger++;
-            Debug.Log($"×´Ì¬1£º·ßÅ­Öµ = {anger}");
+            Debug.Log($"çŠ¶æ€1ï¼šæ„¤æ€’å€¼ = {anger}");
             if (anger >= stage2)
             {
                 type = 2;
                 SwitchStatus(type);
                 sr.sprite = imgs[0];
-                Debug.Log("½øÈë×´Ì¬2£º¼Ò¾ßÕğ¶¯");
+                Debug.Log("è¿›å…¥çŠ¶æ€2ï¼šå®¶å…·éœ‡åŠ¨");
             }
         }
         else if (type == 2)
         {
             anger++;
-            Debug.Log($"×´Ì¬2£º·ßÅ­Öµ = {anger}");
+            Debug.Log($"çŠ¶æ€2ï¼šæ„¤æ€’å€¼ = {anger}");
             if (anger >= stage3)
             {
                 type = 3;
                 SwitchStatus(type);
                 sr.sprite = imgs[0];
-                Debug.Log("½øÈë×´Ì¬3£º¼Ò¾ß±©×ß");
+                Debug.Log("è¿›å…¥çŠ¶æ€3ï¼šå®¶å…·æš´èµ°");
                 CancelInvoke(nameof(StateTick));
             }
         }
@@ -166,7 +166,7 @@ public class Robot : MonoBehaviour
         if (orderCtrl != null)
         {
             orderCtrl.SetSonOrderToTop();
-            Debug.Log("µ÷ÓÃ SetSonOrderToBottom ³É¹¦");
+            Debug.Log("è°ƒç”¨ SetSonOrderToBottom æˆåŠŸ");
         }
         if (moveCoroutine != null)
             StopCoroutine(moveCoroutine);
