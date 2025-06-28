@@ -1118,7 +1118,7 @@ MonoBehaviour:
   startanger: 0
   stage2: 50
   stage3: 100
-  waittime: 10
+  waittime: 0
   sayObj: {fileID: 1737441693}
   dialogueUI: {fileID: 321605422}
 --- !u!212 &1765601527
