@@ -1,16 +1,33 @@
 using System.Collections;
 using UnityEngine;
 
+public enum Status
+{
+    Move,
+    Fly,
+    Die,
+    FlyDie
+}
+
 public class cockroach : MonoBehaviour
 {
-    public Transform[] positions;         // Â·¾¶µãÊı×é
-    public float speed = 2f;              // ÒÆ¶¯ËÙ¶È
-    public float rotationSpeed = 360f;    // Ğı×ªËÙ¶È£¨¶È/Ãë£©
+    public Transform[] positions;         // è·¯å¾„ç‚¹æ•°ç»„
+    public float speed = 2f;              // ç§»åŠ¨é€Ÿåº¦
+    public float rotationSpeed = 360f;    // æ—‹è½¬é€Ÿåº¦ï¼ˆåº¦/ç§’ï¼‰
+    public Status status = Status.Move;
+    public Sprite[] imgs;
+
+    private SpriteRenderer sr;
 
     private Coroutine moveCoroutine;
 
     void Start()
     {
+        sr = GetComponent<SpriteRenderer>();
+
+        status = Status.Move;
+        SwitchStatus(status);
+
         if (positions.Length > 0)
         {
             transform.position = positions[0].position;
@@ -53,14 +70,14 @@ public class cockroach : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
-        Debug.Log("ËùÓĞÂ·¾¶µãÒÑµ½´ï");
+        Debug.Log("æ‰€æœ‰è·¯å¾„ç‚¹å·²åˆ°è¾¾");
     }
 
     void OnMouseDown()
     {
         if (airconditioning.isdie)
             return;
-        Debug.Log("µã»÷ÁËó¯òë£¬½«ÔÚ1.5ÃëºóÏú»Ù");
+        Debug.Log("ç‚¹å‡»äº†èŸ‘è‚ï¼Œå°†åœ¨1.5ç§’åé”€æ¯");
 
         if (moveCoroutine != null)
             StopCoroutine(moveCoroutine);
@@ -72,5 +89,11 @@ public class cockroach : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         Destroy(gameObject);
+    }
+
+    void SwitchStatus(Status newStatus)
+    {
+        status = newStatus;
+        sr.sprite = imgs[(int)status];
     }
 }

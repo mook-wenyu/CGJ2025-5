@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 6471453655350358922}
   - component: {fileID: 396073127766228027}
   - component: {fileID: 7330801393376281048}
-  - component: {fileID: 1671357452646029510}
+  - component: {fileID: 5554611914759297246}
   m_Layer: 0
-  m_Name: Cockroach
+  m_Name: cockroach
   m_TagString: Cockroach
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4f761e1f2ee6836418f815f1d20bc5b9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -105,8 +105,14 @@ MonoBehaviour:
   - {fileID: 0}
   speed: 2
   rotationSpeed: 360
---- !u!70 &1671357452646029510
-CapsuleCollider2D:
+  status: 0
+  imgs:
+  - {fileID: 21300000, guid: 4f761e1f2ee6836418f815f1d20bc5b9, type: 3}
+  - {fileID: 21300000, guid: ab05c366be89e1e42a4aeacdef1ecf72, type: 3}
+  - {fileID: 21300000, guid: 44750d5c6eb9b3f4cbe1757803ce6231, type: 3}
+  - {fileID: 21300000, guid: 8e86cd56acdba494598ce27dacbf7dc4, type: 3}
+--- !u!61 &5554611914759297246
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -138,5 +144,15 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1, y: 2}
-  m_Direction: 0
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.2, y: 0.84}
+    newSize: {x: 1, y: 2}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.2, y: 0.84}
+  m_EdgeRadius: 0
