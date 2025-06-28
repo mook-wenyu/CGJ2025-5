@@ -27,6 +27,7 @@ public class firge : MonoBehaviour
     private bool isCoolingDown = false;
     private bool isPaused = false;     // 是否暂停增长
     private bool isReady = false;
+    private bool isFirst_time_to_wait=false;
 
     [Header("开始等待时间")]
     public float waittime = 10f;
@@ -53,6 +54,7 @@ public class firge : MonoBehaviour
 
         // 等待结束后开始执行逻辑
         InvokeRepeating(nameof(StateTick), 0f, negativespeed);
+        isFirst_time_to_wait = true;
         isReady=true;
 
     }
@@ -64,6 +66,10 @@ public class firge : MonoBehaviour
         {
             hasStartedDelay = true;
             float delay = Random.Range(starttime, endtime);
+            if(isFirst_time_to_wait=true)
+            {
+                delay = 0f;
+            }
             Debug.Log($"状态0：将在 {delay:F1} 秒后进入状态1");
             StartCoroutine(DelayToState1(delay));
         }
