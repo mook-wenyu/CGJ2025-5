@@ -31,6 +31,13 @@ public class StartGame : MonoBehaviour
         maskBg.SetActive(false);
     }
 
+    void Start()
+    {
+        Utils.currentLevel = 1;
+
+        AudioMgr.Instance.PlayMusic("bgm1");
+    }
+
     public void OnPlayGame()
     {
         maskBg.SetActive(true);

@@ -64,11 +64,21 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
 
     void OnTryAgainBtn()
     {
-
+        ResetLevel();
     }
 
     void OnBackMainMenuBtn()
     {
         SceneManager.LoadScene("StartScene");
+    }
+
+    public void ResetLevel()
+    {
+
+    }
+
+    public void NextLevel()
+    {
+        Utils.currentLevel++;
     }
 }

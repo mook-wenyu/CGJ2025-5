@@ -6,7 +6,9 @@ public static class GeneratedConfigLoader
 {
     public static void LoadAllConfigs(Dictionary<string, Dictionary<string, BaseConfig>> csvData)
     {
+        LoadConfig<ColdJokeConfig>(csvData, "ColdJokeConfig");
         LoadConfig<HomeAliveConfig>(csvData, "HomeAliveConfig");
+        LoadConfig<LevelConfigConfig>(csvData, "LevelConfigConfig");
     }
 
     private static void LoadConfig<T>(Dictionary<string, Dictionary<string, BaseConfig>> csvData, string configName) where T : BaseConfig
