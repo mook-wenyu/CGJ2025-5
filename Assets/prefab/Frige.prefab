@@ -308,6 +308,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b56e2d546f0d7314d862294e3b8dd78d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  imgs:
+  - {fileID: 21300000, guid: 17c79f8738676d0478fa860b4372dc18, type: 3}
+  - {fileID: 21300000, guid: 551b11bb7eeec5247ad926076cf7a01b, type: 3}
+  - {fileID: 21300000, guid: 066afe3c4202fdc4389eb1113ba5cad4, type: 3}
+  - {fileID: 21300000, guid: 177326c7df57d594ba7a769f0f57583b, type: 3}
   type: 0
   anger: 0
   negativespeed: 1

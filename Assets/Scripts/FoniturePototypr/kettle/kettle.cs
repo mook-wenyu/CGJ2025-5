@@ -4,6 +4,19 @@ using UnityEngine;
 
 public class Kettle : MonoBehaviour
 {
+    public enum Status
+    {
+        S0,
+        S1,
+        S2,
+        S3
+    }
+    private SpriteRenderer sr;
+    private Status status;
+
+    [Header("图片")]
+    public Sprite[] imgs;
+
     [Header("状态类型")]
     public int type = 0;               // 家具状态
 
@@ -29,11 +42,16 @@ public class Kettle : MonoBehaviour
     private bool isFirst_time_to_wait = false;
     private bool isReady = false;
 
+    public head lid;
+
     private bool hasStartedDelay = false;
 
     void Start()
     {
         type = 0;
+        sr = GetComponent<SpriteRenderer>();
+        status = Status.S0;
+        SwitchStatus(status);
         anger = startanger;
         StartCoroutine(StartDelayed());
     }
@@ -65,6 +83,16 @@ public class Kettle : MonoBehaviour
             Debug.Log($"状态0：将在 {delay:F1} 秒后进入状态1");
             StartCoroutine(DelayToState1(delay));
         }
+        // 控制盖子的显隐和抖动
+        if (type == 1 || type == 2)
+        {
+            lid.StartShaking(type);
+        }
+        else
+        {
+            lid.StopShaking();
+        }
+
     }
 
     private void OnMouseDown()
@@ -88,6 +116,8 @@ public class Kettle : MonoBehaviour
                 if (anger >= stage2)
                 {
                     type = 2;
+                    status = Status.S2;
+                    SwitchStatus(status);
                     Debug.Log("进入状态2：家具开始震动");
                 }
                 break;
@@ -98,6 +128,8 @@ public class Kettle : MonoBehaviour
                 if (anger >= stage3)
                 {
                     type = 3;
+                    status = Status.S3;
+                    SwitchStatus(status);
                     Debug.Log("进入状态3：家具暴走！");
                     return;
                 }
@@ -111,6 +143,8 @@ public class Kettle : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         type = 1;
+        status = Status.S1;
+        SwitchStatus(status);
         Debug.Log("状态0倒计时结束，进入状态1：开始积累愤怒");
     }
 
@@ -118,10 +152,17 @@ public class Kettle : MonoBehaviour
     {
         type = 0;
         anger = 0;
+        status = Status.S0;
+        SwitchStatus(status);
         hasStartedDelay = false;
     }
     public void InteractEvent()
     {
         CoolDownToZero();  
+    }
+
+    void SwitchStatus(Status newStatus)
+    {
+        sr.sprite = imgs[(int)newStatus];
     }
 }

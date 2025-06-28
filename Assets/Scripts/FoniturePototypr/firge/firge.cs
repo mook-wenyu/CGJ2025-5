@@ -3,6 +3,19 @@ using UnityEngine;
 
 public class firge : MonoBehaviour
 {
+    public enum Status
+    {
+        S0,
+        S1,
+        S2,
+        S3
+    }
+    private SpriteRenderer sr;
+    private Status status;
+
+    [Header("图片")]
+    public Sprite[] imgs;
+
     [Header("状态类型")]
     public int type = 0;               // 家具状态
 
@@ -40,7 +53,9 @@ public class firge : MonoBehaviour
     {
         type = 0;
         anger = startanger;
-
+        sr= gameObject.GetComponent<SpriteRenderer>();  
+        status = Status.S0;
+        SwitchStatus(status);
         if (sayObj != null)
             sayObj.SetActive(false); // 初始隐藏
         dialogueUI.SetActive(false);
@@ -60,6 +75,7 @@ public class firge : MonoBehaviour
     }
     void Update()
     {
+
         if (!isReady) return;  // 没等够时间
 
         if (!hasStartedDelay && !isCoolingDown && type == 0 && anger == startanger)
@@ -97,6 +113,8 @@ public class firge : MonoBehaviour
                 if (anger >= 60)
                 {
                     type = 2;
+                    status = Status.S2;
+                    SwitchStatus(status);
                     Debug.Log("进入状态2：家具开始震动");
                 }
                 break;
@@ -107,6 +125,8 @@ public class firge : MonoBehaviour
                 if (anger >= 100)
                 {
                     type = 3;
+                    status = Status.S3;
+                    SwitchStatus(status);
                     Debug.Log("进入状态3：家具暴走！");
                 }
                 break;
@@ -117,6 +137,8 @@ public class firge : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         type = 1;
+        status = Status.S1;
+        SwitchStatus(status);
         Debug.Log("状态0倒计时结束，进入状态1：开始积累愤怒");
     }
 
@@ -132,6 +154,8 @@ public class firge : MonoBehaviour
         Debug.Log("怒气清零，回到状态0");
 
         type = 0;
+        status = Status.S0;
+        SwitchStatus(status);
         anger = startanger;
         isCoolingDown = false;
         hasStartedDelay = false;
@@ -140,5 +164,10 @@ public class firge : MonoBehaviour
         if (sayObj != null)
             sayObj.SetActive(false);
         dialogueUI.SetActive(false);
+    }
+
+    void SwitchStatus(Status newStatus)
+    {
+        sr.sprite = imgs[(int)newStatus];
     }
 }

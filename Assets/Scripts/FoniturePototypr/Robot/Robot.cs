@@ -1,8 +1,15 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Robot : MonoBehaviour
 {
+
+    private SpriteRenderer sr;
+
+    [Header("图片")]
+    public Sprite[] imgs;
+
     [Header("状态类型")]
     public int type = 0;
 
@@ -35,7 +42,11 @@ public class Robot : MonoBehaviour
 
     void Start()
     {
+        type = 0;
         anger = startanger;
+        sr = GetComponent<SpriteRenderer>();
+        sr.sprite = imgs[0];
+        SwitchStatus(type);
         StartCoroutine(InitialWait());
     }
 
@@ -101,6 +112,8 @@ public class Robot : MonoBehaviour
         }
 
         type = 1;
+        SwitchStatus(type);
+        sr.sprite = imgs[0];
         InvokeRepeating(nameof(StateTick), 0f, negativespeed);
     }
 
@@ -122,6 +135,8 @@ public class Robot : MonoBehaviour
             if (anger >= stage2)
             {
                 type = 2;
+                SwitchStatus(type);
+                sr.sprite = imgs[0];
                 Debug.Log("进入状态2：家具震动");
             }
         }
@@ -132,6 +147,8 @@ public class Robot : MonoBehaviour
             if (anger >= stage3)
             {
                 type = 3;
+                SwitchStatus(type);
+                sr.sprite = imgs[0];
                 Debug.Log("进入状态3：家具暴走");
                 CancelInvoke(nameof(StateTick));
             }
@@ -142,6 +159,8 @@ public class Robot : MonoBehaviour
     {
         CancelInvoke(nameof(StateTick));
         type = 0;
+        SwitchStatus(type);
+        sr.sprite = imgs[0];
         anger = startanger;
 
         if (orderCtrl != null)
@@ -153,5 +172,9 @@ public class Robot : MonoBehaviour
             StopCoroutine(moveCoroutine);
 
         StartCoroutine(IdleAndMoveLoop());
+    }
+    void SwitchStatus(int newStatus)
+    {
+        sr.sprite = imgs[newStatus];
     }
 }

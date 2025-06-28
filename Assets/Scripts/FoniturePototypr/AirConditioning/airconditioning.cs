@@ -10,6 +10,9 @@ public class airconditioning : MonoBehaviour
         S2, 
         S3
     }
+    private SpriteRenderer sr;
+    private Status status;
+
     public int type = 0;
 
     [Header("ÅÐ¶ÏÂ·¾¶µã")]
@@ -20,8 +23,7 @@ public class airconditioning : MonoBehaviour
     public Sprite[] imgs;
     public GameObject smoke;
 
-    private SpriteRenderer sr;
-    private Status status;
+    
 
     //public static bool isdie=false;
 

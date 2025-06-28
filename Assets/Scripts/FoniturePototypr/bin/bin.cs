@@ -3,6 +3,11 @@ using UnityEngine;
 
 public class bin : MonoBehaviour
 {
+    private SpriteRenderer sr;
+
+    [Header("图片")]
+    public Sprite[] imgs;
+
     [Header("状态类型")]
     public int type = 0;               // 家具状态
 
@@ -31,6 +36,7 @@ public class bin : MonoBehaviour
     [Header("引用物体")]
     public Collider2D position1;
     public Collider2D position2;
+    public GameObject lid;
 
     private bool isCoolingDown = false;
     private bool hasStartedDelay = false;
@@ -41,7 +47,10 @@ public class bin : MonoBehaviour
     void Start()
     {
         type = 0;
+        lid.gameObject.SetActive(true);
         anger = startanger;
+        sr = GetComponent<SpriteRenderer>();
+        SwitchStatus(type);
         StartCoroutine(StartDelayed());
     }
 
@@ -115,8 +124,19 @@ public class bin : MonoBehaviour
         {
             anger++;
             Debug.Log($"愤怒值 = {anger}");
-            if (anger >= stage2 && type == 1) type = 2;
-            if (anger >= stage3 && type == 2) type = 3;
+            if (anger >= stage2 && type == 1)
+            {
+                type = 2;
+                lid.gameObject.SetActive(false);
+                SwitchStatus(type);
+            }
+            if (anger >= stage3 && type == 2)
+            {
+                type = 3;
+                lid.gameObject.SetActive(false);
+                SwitchStatus(type);
+            }
+
         }
     }
 
@@ -124,15 +144,24 @@ public class bin : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         type = 1;
+        lid.gameObject.SetActive(false);
+        SwitchStatus(type);
         Debug.Log("进入状态1：开始积累愤怒");
     }
 
     void CoolDownToZero()
     {
         type = 0;
+        lid.gameObject.SetActive(true);
+        SwitchStatus(type);
         anger = 0;
         isCoolingDown = false;
         hasStartedDelay = false;
         Debug.Log("怒气清空，回到状态0");
+    }
+
+    void SwitchStatus(int newStatus)
+    {
+        sr.sprite = imgs[newStatus];
     }
 }

@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class WashMachine : MonoBehaviour
 {
+    
+    private SpriteRenderer sr;
+
+    [Header("图片")]
+    public Sprite[] imgs;
+
+
     [Header("状态类型")]
     public int type = 0;               // 家具状态
 
@@ -29,12 +36,24 @@ public class WashMachine : MonoBehaviour
     private bool isFirst_time_to_wait = false;
     private bool isReady = false;
 
+    [Header("附加装饰")]
+    public plant plantObj;  // 拖入 plant GameObject
+    public GameObject face;
+    public SpriteRenderer fsr;
+    public Sprite[] faceimg;
+
     private bool hasStartedDelay = false;
 
     void Start()
     {
+        sr = GetComponent<SpriteRenderer>();
         type = 0;
+        SwitchStatus(type);
         anger = startanger;
+        fsr=face.GetComponent<SpriteRenderer>();
+        if (plantObj != null)
+            plantObj.gameObject.SetActive(false);  // 默认不显示
+        face.gameObject.SetActive(false);
         StartCoroutine(StartDelayed());
     }
 
@@ -65,6 +84,21 @@ public class WashMachine : MonoBehaviour
             Debug.Log($"状态0：将在 {delay:F1} 秒后进入状态1");
             StartCoroutine(DelayToState1(delay));
         }
+
+        if (plantObj != null)
+        {
+            if (type == 1 || type == 2)
+            {
+                if (!plantObj.gameObject.activeSelf)
+                    plantObj.StartRotate(type);  // 显身并开始旋转
+            }
+            else
+            {
+                if (plantObj.gameObject.activeSelf)
+                    plantObj.StopRotate();       // 隐身并停止旋转
+            }
+        }
+
     }
 
     private void OnMouseDown()
@@ -74,7 +108,6 @@ public class WashMachine : MonoBehaviour
             InteractEvent();
         }
     }
-
 
     void StateTick()
     {
@@ -88,6 +121,9 @@ public class WashMachine : MonoBehaviour
                 if (anger >= stage2)
                 {
                     type = 2;
+                    fsr.sprite = faceimg[1];
+                    face.gameObject.SetActive(true);
+                    SwitchStatus(type);
                     Debug.Log("进入状态2：家具开始震动");
                 }
                 break;
@@ -98,6 +134,8 @@ public class WashMachine : MonoBehaviour
                 if (anger >= stage3)
                 {
                     type = 3;
+                    face.gameObject.SetActive(false);
+                    SwitchStatus(type);
                     Debug.Log("进入状态3：家具暴走！");
                     return;
                 }
@@ -111,17 +149,28 @@ public class WashMachine : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         type = 1;
+        SwitchStatus(type);
+        fsr.sprite = faceimg[0];
+        face.gameObject.SetActive(true);
         Debug.Log("状态0倒计时结束，进入状态1：开始积累愤怒");
     }
 
     void CoolDownToZero()
     {
         type = 0;
+        SwitchStatus(type);
         anger = 0;
+        face.gameObject.SetActive(false);
+        if (plantObj != null)
+            plantObj.StopRotate();
         hasStartedDelay = false;
     }
     public void InteractEvent()
     {
         CoolDownToZero();  
+    }
+    void SwitchStatus(int newStatus)
+    {
+        sr.sprite = imgs[newStatus];
     }
 }

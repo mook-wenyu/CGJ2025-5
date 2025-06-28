@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 225383538998309704}
   - component: {fileID: 4822199019621561167}
   - component: {fileID: 1596774404342672610}
-  - component: {fileID: 5229350367239798245}
+  - component: {fileID: 5484340249095233815}
   m_Layer: 0
   m_Name: Robot
   m_TagString: Untagged
@@ -29,8 +29,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 11.29, y: -2.57, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -98,6 +98,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faa3d52417d96bd4d9b6e59365de85e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  imgs:
+  - {fileID: 21300000, guid: a0963bd4b50d68a419165abd4f8f4c49, type: 3}
+  - {fileID: 21300000, guid: 9e1676e56a0d036438b962df7e29f5f7, type: 3}
+  - {fileID: 21300000, guid: 20ad55e96385c8d4b8d3fe7112f3149d, type: 3}
+  - {fileID: 21300000, guid: 269a87784fc99bd448997ad0fdc8dac0, type: 3}
   type: 0
   anger: 0
   negativespeed: 0.5
@@ -109,10 +114,9 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
   speed: 10
---- !u!60 &5229350367239798245
-PolygonCollider2D:
+--- !u!70 &5484340249095233815
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -144,34 +148,5 @@ PolygonCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.76, y: 0.94}
-    newSize: {x: 1, y: 2}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.79999995, y: -0.099999994}
-      - {x: 0.79999995, y: 0.17999999}
-      - {x: 0.77, y: 0.24}
-      - {x: 0.71, y: 0.31}
-      - {x: 0.58, y: 0.37}
-      - {x: 0.06, y: 0.39999998}
-      - {x: -0.41, y: 0.39999998}
-      - {x: -0.53999996, y: 0.39}
-      - {x: -0.72999996, y: 0.31}
-      - {x: -0.79999995, y: 0.12}
-      - {x: -0.79999995, y: -0.089999996}
-      - {x: -0.78999996, y: -0.14}
-      - {x: -0.76, y: -0.22}
-      - {x: -0.61, y: -0.38}
-      - {x: -0.31, y: -0.44}
-      - {x: 0.34, y: -0.44}
-      - {x: 0.58, y: -0.39}
-      - {x: 0.65, y: -0.35}
-      - {x: 0.77, y: -0.19999999}
-  m_UseDelaunayMesh: 0
+  m_Size: {x: 1.76, y: 0.94}
+  m_Direction: 1
