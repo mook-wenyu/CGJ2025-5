@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 public class Clock : MonoBehaviour
 {
     public Sprite[] imgs;
 
+    [HideInInspector]
     public Transform clockH, clockM;
 
     private SpriteRenderer sr;
@@ -25,7 +24,6 @@ public class Clock : MonoBehaviour
     private bool isFirstWait = false;
     private bool hasStartedDelay = false;
     private Coroutine launchCoroutine = null;
-    private Coroutine switchToSpecialCoroutine = null;
 
     void Awake()
     {
@@ -56,11 +54,7 @@ public class Clock : MonoBehaviour
                 isFirstWait = false;
                 delay = 0f;
             }
-            if (switchToSpecialCoroutine != null)
-            {
-                StopCoroutine(switchToSpecialCoroutine);
-            }
-            switchToSpecialCoroutine = StartCoroutine(SwitchToSpecial(delay));
+            StartCoroutine(SwitchToSpecial(delay));
             return;
         }
 
@@ -87,8 +81,12 @@ public class Clock : MonoBehaviour
     /// <summary>
     /// 启动
     /// </summary>
-    public void Launch()
+    public void Launch(Furniture f)
     {
+        furniture = f;
+
+        Reset();
+
         currentAnger = furniture.startanger;
         if (launchCoroutine != null)
         {
@@ -160,6 +158,29 @@ public class Clock : MonoBehaviour
         status = FurnitureStatus.Special;
         SwitchStatus(status);
         hasStartedDelay = false;
+    }
+
+    void SwitchToNormal()
+    {
+        currentAnger = 0;
+        status = FurnitureStatus.Normal;
+        SwitchStatus(status);
+
+        hasStartedDelay = false;
+    }
+
+    void Reset()
+    {
+        SwitchToNormal();
+
+        isPlaying = false;
+        isFirstWait = false;
+
+        if (launchCoroutine != null)
+        {
+            StopCoroutine(launchCoroutine);
+            CancelInvoke(nameof(StateTick));
+        }
     }
 
     /// <summary>

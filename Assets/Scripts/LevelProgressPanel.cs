@@ -18,6 +18,8 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
     public Button tryAgainBtn;
     public Button backMainMenuBtn;
 
+    public GameObject endPanel;
+
     private readonly List<float> progress = new List<float>();
 
     void Awake()
@@ -40,12 +42,19 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
 
     public void ShowVictoryPanel()
     {
+        if (Utils.isFailed || Utils.isVictory)
+        {
+            return;
+        }
+        Utils.isVictory = true;
+        Utils.isFailed = false;
+
         victoryPanel.transform.localPosition = new Vector2(1920, 0);
         fgPanel.transform.localPosition = new Vector2(2660, 0);
         victoryPanel.SetActive(true);
         fgPanel.SetActive(true);
 
-        if (Utils.currentLevel < 7)
+        if (Utils.currentLevel < Utils.MAX_LEVEL)
         {
             levelProgressScrollbar.value = progress[Utils.currentLevel];
             levelProgressText.text = GetLevelProgressText(Utils.currentLevel + 1);
@@ -67,25 +76,59 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
         });
     }
 
-    public void ShowFailPanel()
+    public void ShowEndPanel()
     {
+        if (Utils.isFailed || Utils.isVictory)
+        {
+            return;
+        }
+
+        Utils.isVictory = true;
+        Utils.isFailed = false;
+
+        endPanel.transform.localPosition = new Vector2(1920, 0);
+        fgPanel.transform.localPosition = new Vector2(2660, 0);
+        endPanel.SetActive(true);
+        fgPanel.SetActive(true);
+    }
+
+    public void ShowFailPanel(string name)
+    {
+        if (Utils.isFailed || Utils.isVictory)
+        {
+            return;
+        }
+        Utils.isVictory = false;
+        Utils.isFailed = true;
+
+        if (WorldSceneRoot.Instance.gameTimeCoroutine != null)
+        {
+            StopCoroutine(WorldSceneRoot.Instance.gameTimeCoroutine);
+        }
+
         failPanel.SetActive(true);
     }
 
     void OnTryAgainBtn()
     {
         failPanel.SetActive(false);
+        Utils.isFailed = false;
+        Utils.isVictory = false;
         WorldSceneRoot.Instance.ResetWorld(Utils.currentLevel);
     }
 
     void OnBackMainMenuBtn()
     {
+        Utils.isFailed = false;
+        Utils.isVictory = false;
         SceneManager.LoadScene("StartScene");
     }
 
     void NextLevel()
     {
         Utils.currentLevel++;
+        Utils.isFailed = false;
+        Utils.isVictory = false;
         WorldSceneRoot.Instance.ResetWorld(Utils.currentLevel);
     }
 

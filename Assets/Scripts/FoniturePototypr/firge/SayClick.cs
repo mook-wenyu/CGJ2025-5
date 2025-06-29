@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SayClick : MonoBehaviour
 {
-    public firge firgeScript;         // 拖入 frige 脚本
+    public Firge firgeScript;         // 拖入 frige 脚本
     public GameObject dialogueUI;     // 拖入 dialogue 对象（UI）
     public RectTransform selection1;  // 拖入 selection1 的 RectTransform
     public RectTransform selection2;  // 拖入 selection2 的 RectTransform

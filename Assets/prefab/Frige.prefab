@@ -65,17 +65,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button1
+  m_text: "\u6577\u884D"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 25ce2df3e98413e4c8cf29c43ef903ab, type: 2}
+  m_sharedMaterial: {fileID: 1554791109276484034, guid: 25ce2df3e98413e4c8cf29c43ef903ab, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -92,8 +92,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 48
+  m_fontSizeBase: 48
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -313,15 +313,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 551b11bb7eeec5247ad926076cf7a01b, type: 3}
   - {fileID: 21300000, guid: 066afe3c4202fdc4389eb1113ba5cad4, type: 3}
   - {fileID: 21300000, guid: 177326c7df57d594ba7a769f0f57583b, type: 3}
-  type: 0
-  anger: 0
-  negativespeed: 1
-  starttime: 1
-  endtime: 10
-  startanger: 0
-  stage2: 50
-  stage3: 100
-  waittime: 5
   sayObj: {fileID: 4580174330317495361}
   dialogueUI: {fileID: 8723822581383481858}
 --- !u!1 &3142617661771819580
@@ -361,7 +352,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -141}
-  m_SizeDelta: {x: 500, y: 50}
+  m_SizeDelta: {x: 508, y: 90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8584414866402223556
 CanvasRenderer:
@@ -446,8 +437,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3966256894789593567}
-        m_TargetAssemblyTypeName: firge, Assembly-CSharp
-        m_MethodName: ResetToCalm
+        m_TargetAssemblyTypeName: Firge, Assembly-CSharp
+        m_MethodName: ClickClose
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -522,17 +513,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button2
+  m_text: "\u62D2\u7EDD"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 25ce2df3e98413e4c8cf29c43ef903ab, type: 2}
+  m_sharedMaterial: {fileID: 1554791109276484034, guid: 25ce2df3e98413e4c8cf29c43ef903ab, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -549,8 +540,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 48
+  m_fontSizeBase: 48
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -628,7 +619,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 5}
-  m_SizeDelta: {x: 500, y: 50}
+  m_SizeDelta: {x: 508, y: 90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7439318655661332681
 CanvasRenderer:
@@ -713,8 +704,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3966256894789593567}
-        m_TargetAssemblyTypeName: firge, Assembly-CSharp
-        m_MethodName: ResetToCalm
+        m_TargetAssemblyTypeName: Firge, Assembly-CSharp
+        m_MethodName: SwitchToNormal
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -791,15 +782,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: Im a joke
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 25ce2df3e98413e4c8cf29c43ef903ab, type: 2}
+  m_sharedMaterial: {fileID: 1554791109276484034, guid: 25ce2df3e98413e4c8cf29c43ef903ab, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

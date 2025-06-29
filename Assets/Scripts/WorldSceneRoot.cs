@@ -9,18 +9,27 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
     public Slider gameTimeSlider;
 
     [Header("World")]
-    public GameObject bedroomRoot;
     public GameObject kitchenRoot;
+    public GameObject firgeGO;
+
+
+    public GameObject bedroomRoot;
+
+    public Button startBtn;
 
     private Camera mainCamera;
 
-    private Coroutine gameTimeCoroutine;
+    public Coroutine gameTimeCoroutine;
+
+    private Firge firge;
 
     void Awake()
     {
         mainCamera = Camera.main;
         gameTimeSlider.value = 0;
         gameTimeSlider.gameObject.SetActive(false);
+
+        firge = firgeGO.transform.GetComponentInChildren<Firge>();
     }
 
     // Update is called once per frame
@@ -59,36 +68,53 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
         }
 
         gameTimeCoroutine = StartCoroutine(GameTimeCoroutine(time));
+
+        // 初始化家具配置
+        for (int i = 0; i < levelData.content.Length; i++)
+        {
+            var content = levelData.content[i];
+            var furniture = new Furniture()
+            {
+                name = content,
+                waitTime = levelData.first_show[i],
+                minInterval = levelData.show_mingap[i],
+                maxInterval = levelData.show_maxgap[i],
+                startanger = (int)levelData.baseline[i],
+                angerSpeed = levelData.velocity[i],
+                stageDark = (int)levelData.stage_2_threshold[i],
+                stageCrazy = (int)levelData.stage_3_threshold[i],
+            };
+
+            switch (content)
+            {
+                case "冰箱":
+                    firge.Launch(furniture);
+                    break;
+            }
+        }
     }
 
     IEnumerator GameTimeCoroutine(int time)
     {
         while (true)
         {
-            yield return new WaitForSeconds(1f);
-            // yield return new WaitForSeconds(1f);
-            Tween.UISliderValue(gameTimeSlider, gameTimeSlider.value + 1, 1f);
+            yield return null;
+            //yield return new WaitForSeconds(1f);
+            Tween.UISliderValue(gameTimeSlider, gameTimeSlider.value + 1, 0f);
             if (gameTimeSlider.value >= time)
             {
                 break;
             }
         }
 
-        if (Random.Range(0, 100) < 50)
+        gameTimeSlider.gameObject.SetActive(false);
+        if (Utils.currentLevel < Utils.MAX_LEVEL)
         {
-            gameTimeSlider.gameObject.SetActive(false);
-            if (Utils.currentLevel < 7)
-            {
-                LevelProgressPanel.Instance.ShowVictoryPanel();
-            }
-            else
-            {
-                // TODO: 显示通关界面
-            }
+            LevelProgressPanel.Instance.ShowVictoryPanel();
         }
         else
         {
-            LevelProgressPanel.Instance.ShowFailPanel();
+            LevelProgressPanel.Instance.ShowEndPanel();
         }
     }
 

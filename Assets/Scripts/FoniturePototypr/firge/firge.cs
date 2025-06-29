@@ -1,145 +1,150 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class firge : MonoBehaviour
+public class Firge : MonoBehaviour
 {
-    public enum Status
-    {
-        S0,
-        S1,
-        S2,
-        S3
-    }
-    private SpriteRenderer sr;
-    private Status status;
-
-    [Header("图片")]
     public Sprite[] imgs;
-
-    [Header("状态类型")]
-    public int type = 0;               // 家具状态
-
-    [Header("现在的愤怒值")]
-    public int anger = 0;              // 愤怒值
-
-    [Header("愤怒值增长速度(x秒增长1)")]
-    public float negativespeed = 1f;   // 情绪积累速度（秒）
-
-    [Header("触发间隔")]
-    public float starttime = 1f;
-    public float endtime = 10f;
-
-    [Header("状态基线值")]
-    public int startanger = 0;
-
-    [Header("阶段阈值")]
-    public int stage2 = 50;
-    public int stage3 = 100;
-
-    private bool hasStartedDelay = false;
-    private bool isCoolingDown = false;
-    private bool isPaused = false;     // 是否暂停增长
-    private bool isReady = false;
-    private bool isFirst_time_to_wait=false;
-
-    [Header("开始等待时间")]
-    public float waittime = 10f;
 
     [Header("引用物体")]
     public GameObject sayObj;          // 子物体 say 的引用
     public GameObject dialogueUI;
 
+
+    private SpriteRenderer sr;
+    private FurnitureStatus status = FurnitureStatus.Normal;
+
+    private int currentAnger = 0;              // 愤怒值
+
+    private Furniture furniture;
+
+    private bool hasStartedDelay = false;
+    private bool isCoolingDown = false;
+    private bool isPaused = false;     // 是否暂停增长
+    private bool isReady = false;
+    private bool isFirstWait = false;
+
+    private Coroutine launchCoroutine = null;
+
+    void Awake()
+    {
+        sr = gameObject.GetComponent<SpriteRenderer>();
+        isReady = false;
+    }
+
     void Start()
     {
-        type = 0;
-        anger = startanger;
-        sr= gameObject.GetComponent<SpriteRenderer>();  
-        status = Status.S0;
         SwitchStatus(status);
+
         if (sayObj != null)
             sayObj.SetActive(false); // 初始隐藏
         dialogueUI.SetActive(false);
-
-        StartCoroutine(StartDelayed());
     }
-    IEnumerator StartDelayed()
-    {
-        Debug.Log($"等待 {waittime} 秒后开始运行");
-        yield return new WaitForSeconds(waittime);
 
-        // 等待结束后开始执行逻辑
-        InvokeRepeating(nameof(StateTick), 0f, negativespeed);
-        isFirst_time_to_wait = true;
-        isReady=true;
-
-    }
     void Update()
     {
 
         if (!isReady) return;  // 没等够时间
 
-        if (!hasStartedDelay && !isCoolingDown && type == 0 && anger == startanger)
+        if (!hasStartedDelay && !isCoolingDown && status == FurnitureStatus.Normal && currentAnger == furniture.startanger)
         {
             hasStartedDelay = true;
-            float delay = Random.Range(starttime, endtime);
-            if(isFirst_time_to_wait==true)
+            float delay = Random.Range(furniture.minInterval, furniture.maxInterval + 1);
+            if (isFirstWait)
             {
                 delay = 0f;
-                isFirst_time_to_wait = false;
+                isFirstWait = false;
             }
             Debug.Log($"状态0：将在 {delay:F1} 秒后进入状态1");
-            StartCoroutine(DelayToState1(delay));
+            StartCoroutine(SwitchToSpecial(delay));
         }
+    }
+
+    public void Launch(Furniture f)
+    {
+        furniture = f;
+        Reset();
+
+        currentAnger = furniture.startanger;
+        if (launchCoroutine != null)
+        {
+            StopCoroutine(launchCoroutine);
+        }
+        launchCoroutine = StartCoroutine(LaunchCoroutine());
+    }
+
+    IEnumerator LaunchCoroutine()
+    {
+        yield return new WaitForSeconds(furniture.waitTime);
+        isReady = true;
+        isFirstWait = true;
+        InvokeRepeating(nameof(StateTick), 0f, furniture.angerSpeed);
     }
 
     void StateTick()
     {
-        if (isCoolingDown || isPaused) return;  
-        if (type == 3) return;
+        if (!isReady) return;
+        if (isCoolingDown || isPaused) return;
 
-        switch (type)
+
+        switch (status)
         {
-            case 0:
+            case FurnitureStatus.Normal:
                 if (sayObj != null && sayObj.activeSelf)
                     sayObj.SetActive(false);
                 break;
 
-            case 1:
+            case FurnitureStatus.Special:
                 if (sayObj != null && !sayObj.activeSelf)
                     sayObj.SetActive(true);
 
-                anger++;
-                Debug.Log($"状态1：愤怒值 = {anger}");
-                if (anger >= 60)
-                {
-                    type = 2;
-                    status = Status.S2;
-                    SwitchStatus(status);
-                    Debug.Log("进入状态2：家具开始震动");
-                }
+                AngerTick();
+                Debug.Log($"状态1：愤怒值 = {currentAnger}");
                 break;
 
-            case 2:
-                anger++;
-                Debug.Log($"状态2：愤怒值 = {anger}");
-                if (anger >= 100)
-                {
-                    type = 3;
-                    status = Status.S3;
-                    SwitchStatus(status);
-                    Debug.Log("进入状态3：家具暴走！");
-                }
+            case FurnitureStatus.Dark:
+                AngerTick();
+                Debug.Log($"状态2：愤怒值 = {currentAnger}");
                 break;
         }
     }
 
-    IEnumerator DelayToState1(float delay)
+
+    /// <summary>
+    /// 愤怒值更新
+    /// </summary>
+    void AngerTick()
+    {
+        currentAnger++;
+        if (currentAnger >= furniture.stageCrazy && status != FurnitureStatus.Crazy)
+        {
+            status = FurnitureStatus.Crazy;
+
+            if (sayObj != null)
+                sayObj.SetActive(false);
+            dialogueUI.SetActive(false);
+
+            SwitchStatus(status);
+            LevelProgressPanel.Instance.ShowFailPanel(furniture.name);
+            Debug.Log("进入状态3：家具暴走！");
+            return;
+        }
+        if (currentAnger >= furniture.stageDark && status != FurnitureStatus.Dark)
+        {
+            status = FurnitureStatus.Dark;
+            SwitchStatus(status);
+            Debug.Log("进入状态2：家具开始震动");
+            return;
+        }
+    }
+
+    IEnumerator SwitchToSpecial(float delay)
     {
         yield return new WaitForSeconds(delay);
-        type = 1;
-        status = Status.S1;
+
+        status = FurnitureStatus.Special;
         SwitchStatus(status);
-        Debug.Log("状态0倒计时结束，进入状态1：开始积累愤怒");
+        hasStartedDelay = false;
     }
 
     //  交互行为：
@@ -149,14 +154,14 @@ public class firge : MonoBehaviour
         Debug.Log(isPaused ? "已暂停怒气增长" : "怒气恢复增长");
     }
 
-    public void ResetToCalm()
+    public void SwitchToNormal()
     {
         Debug.Log("怒气清零，回到状态0");
 
-        type = 0;
-        status = Status.S0;
+        status = FurnitureStatus.Normal;
         SwitchStatus(status);
-        anger = startanger;
+        currentAnger = furniture.startanger;
+
         isCoolingDown = false;
         hasStartedDelay = false;
         isPaused = false;
@@ -166,7 +171,30 @@ public class firge : MonoBehaviour
         dialogueUI.SetActive(false);
     }
 
-    void SwitchStatus(Status newStatus)
+    public void ClickClose()
+    {
+        isPaused = false;
+
+        if (sayObj != null)
+            sayObj.SetActive(true);
+        dialogueUI.SetActive(false);
+    }
+
+    void Reset()
+    {
+        SwitchToNormal();
+
+        isReady = false;
+        isFirstWait = false;
+
+        if (launchCoroutine != null)
+        {
+            StopCoroutine(launchCoroutine);
+            CancelInvoke(nameof(StateTick));
+        }
+    }
+
+    void SwitchStatus(FurnitureStatus newStatus)
     {
         sr.sprite = imgs[(int)newStatus];
     }
