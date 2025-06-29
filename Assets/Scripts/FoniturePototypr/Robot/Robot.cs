@@ -5,72 +5,78 @@ using UnityEngine;
 public class Robot : MonoBehaviour
 {
 
-    private SpriteRenderer sr;
-
     [Header("图片")]
     public Sprite[] imgs;
 
-    [Header("状态类型")]
-    public int type = 0;
+    private SpriteRenderer sr;
 
-    [Header("现在的愤怒值")]
-    public int anger = 0;
+    private FurnitureStatus status = FurnitureStatus.Normal;
 
-    [Header("愤怒值增长速度(x秒增长1)")]
-    public float negativespeed = 1f;
+    private int currentAnger = 0;
 
-    [Header("阶段阈值")]
-    public int stage2 = 50;
-    public int stage3 = 100;
+    private Furniture furniture;
 
-    [Header("开始等待时间")]
-    public float waittime = 10f;
 
-    [Header("愤怒值基线")]
-    public int startanger = 0;
-
+    public Transform startPoint;
     [Header("所有目标位置")]
     public Transform[] positions;
 
     [Header("移动速度")]
     public float speed = 2f;
 
-    private bool isFirstTimeWait = false;
+    private Coroutine launchCoroutine = null;
+
+    private bool isFirstWait = false;
     private Coroutine moveCoroutine;
-    private Object orderCtrl = null;
+    private HidePoint orderCtrl = null;
     private int lastIndex = -1;
+
+    void Awake()
+    {
+        sr = gameObject.GetComponent<SpriteRenderer>();
+    }
 
     void Start()
     {
-        type = 0;
-        anger = startanger;
-        sr = GetComponent<SpriteRenderer>();
-        sr.sprite = imgs[0];
-        SwitchStatus(type);
-        StartCoroutine(InitialWait());
+        SwitchStatus(status);
     }
 
-    IEnumerator InitialWait()
+    public void Launch(Furniture f)
     {
-        Debug.Log($"首次启动，等待 {waittime} 秒");
-        yield return new WaitForSeconds(waittime);
-        isFirstTimeWait = true;
+        furniture = f;
+        Reset();
+
+        currentAnger = furniture.startanger;
+        SwitchStatus(status);
+
+        if (launchCoroutine != null)
+        {
+            StopCoroutine(launchCoroutine);
+        }
+        launchCoroutine = StartCoroutine(LaunchCoroutine());
+    }
+
+    IEnumerator LaunchCoroutine()
+    {
+        yield return new WaitForSeconds(furniture.waitTime);
+        isFirstWait = true;
+
         StartCoroutine(IdleAndMoveLoop());
     }
 
     IEnumerator IdleAndMoveLoop()
     {
-         // 记录上一次的索引
+        // 记录上一次的索引
 
         while (true)
         {
-            if (type != 0) yield break;
+            if (status != FurnitureStatus.Normal) yield break;
 
-            float delay = Random.Range(1f, 10f);
-            if (isFirstTimeWait)
+            float delay = Random.Range(furniture.minInterval, furniture.maxInterval + 1);
+            if (isFirstWait)
             {
                 delay = 0f;
-                isFirstTimeWait = false;
+                isFirstWait = false;
             }
             Debug.Log($"空闲状态：等待 {delay:F1} 秒后移动");
             yield return new WaitForSeconds(delay);
@@ -104,64 +110,71 @@ public class Robot : MonoBehaviour
         }
         yield return new WaitForSeconds(0.5f);
         Debug.Log("已到达目标点，进入状态1");
-        orderCtrl = target.GetComponent<Object>();
+        orderCtrl = target.GetComponent<HidePoint>();
         if (orderCtrl != null)
         {
             orderCtrl.SetSonOrderToBottom();
             Debug.Log("调用 SetSonOrderToBottom 成功");
         }
 
-        type = 1;
-        SwitchStatus(type);
-        sr.sprite = imgs[0];
-        InvokeRepeating(nameof(StateTick), 0f, negativespeed);
+        status = FurnitureStatus.Special;
+        SwitchStatus(status);
+
+        InvokeRepeating(nameof(StateTick), 0f, furniture.angerSpeed);
+    }
+
+
+    void StateTick()
+    {
+        switch (status)
+        {
+            case FurnitureStatus.Special:
+                AngerTick();
+                break;
+            case FurnitureStatus.Dark:
+                AngerTick();
+                break;
+        }
+    }
+
+    void AngerTick()
+    {
+        currentAnger++;
+        Debug.Log($"愤怒值 = {currentAnger}");
+        if (currentAnger >= furniture.stageCrazy && status != FurnitureStatus.Crazy)
+        {
+            status = FurnitureStatus.Crazy;
+            SwitchStatus(status);
+            CancelInvoke(nameof(StateTick));
+            Debug.Log("进入状态3：家具暴走！");
+            LevelProgressPanel.Instance.ShowFailPanel(furniture.name);
+            return;
+        }
+        if (currentAnger >= furniture.stageDark && status != FurnitureStatus.Dark)
+        {
+            status = FurnitureStatus.Dark;
+            SwitchStatus(status);
+            Debug.Log("进入状态2：家具开始震动");
+            return;
+        }
     }
 
     private void OnMouseDown()
     {
-        if (type == 1 || type == 2)
+        if (status == FurnitureStatus.Special || status == FurnitureStatus.Dark)
         {
             Debug.Log("点击家具：重置为状态0");
-            ResetToIdle();
+            SwitchToNormal();
         }
     }
 
-    void StateTick()
-    {
-        if (type == 1)
-        {
-            anger++;
-            Debug.Log($"状态1：愤怒值 = {anger}");
-            if (anger >= stage2)
-            {
-                type = 2;
-                SwitchStatus(type);
-                sr.sprite = imgs[0];
-                Debug.Log("进入状态2：家具震动");
-            }
-        }
-        else if (type == 2)
-        {
-            anger++;
-            Debug.Log($"状态2：愤怒值 = {anger}");
-            if (anger >= stage3)
-            {
-                type = 3;
-                SwitchStatus(type);
-                sr.sprite = imgs[0];
-                Debug.Log("进入状态3：家具暴走");
-                CancelInvoke(nameof(StateTick));
-            }
-        }
-    }
 
-    void ResetToIdle()
+    void SwitchToNormal()
     {
         CancelInvoke(nameof(StateTick));
-        type = 0;
-        SwitchStatus(type);
-        sr.sprite = imgs[0];
-        anger = startanger;
+        status = FurnitureStatus.Normal;
+        SwitchStatus(status);
+        currentAnger = furniture.startanger;
 
         if (orderCtrl != null)
         {
@@ -173,8 +186,22 @@ public class Robot : MonoBehaviour
 
         StartCoroutine(IdleAndMoveLoop());
     }
-    void SwitchStatus(int newStatus)
+
+    void Reset()
     {
-        sr.sprite = imgs[newStatus];
+        transform.position = new Vector2(startPoint.position.x, transform.position.y);
+
+        SwitchToNormal();
+
+
+        if (launchCoroutine != null)
+        {
+            StopCoroutine(launchCoroutine);
+        }
+    }
+
+    void SwitchStatus(FurnitureStatus newStatus)
+    {
+        sr.sprite = imgs[(int)newStatus];
     }
 }

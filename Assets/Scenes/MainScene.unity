@@ -743,7 +743,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 629640595580779144, guid: 9de1392ce49033f428d704dc21983e9b, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1397853287268403749, guid: 9de1392ce49033f428d704dc21983e9b, type: 3}
       propertyPath: m_Name
@@ -755,15 +755,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1926881811172468691, guid: 9de1392ce49033f428d704dc21983e9b, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2980444114361061432, guid: 9de1392ce49033f428d704dc21983e9b, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4574308487890834492, guid: 9de1392ce49033f428d704dc21983e9b, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6628014211192183484, guid: 9de1392ce49033f428d704dc21983e9b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2530,6 +2530,7 @@ MonoBehaviour:
   kitchenRoot: {fileID: 777653753}
   firgeGO: {fileID: 1695077728}
   binGO: {fileID: 1051566971}
+  robotGO: {fileID: 939642437}
   bedroomRoot: {fileID: 531874662}
   startBtn: {fileID: 0}
 --- !u!114 &811531497
@@ -3206,6 +3207,11 @@ CanvasRenderer:
 Transform:
   m_CorrespondingSourceObject: {fileID: 3962376856871304069, guid: 9de1392ce49033f428d704dc21983e9b, type: 3}
   m_PrefabInstance: {fileID: 193320108}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &939642437 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8879332964483240390, guid: 8c37cca1496d3764f9abbf3963142adc, type: 3}
+  m_PrefabInstance: {fileID: 1765898562}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &974955017
 GameObject:
@@ -5393,7 +5399,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5040118399553903157, guid: cbefb3d0b4e33f54a8f24dd68bc5efe9, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5177412169929697228, guid: cbefb3d0b4e33f54a8f24dd68bc5efe9, type: 3}
       propertyPath: m_Enabled
@@ -5409,7 +5415,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9045402338586161152, guid: cbefb3d0b4e33f54a8f24dd68bc5efe9, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5474,6 +5480,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1596774404342672610, guid: 8c37cca1496d3764f9abbf3963142adc, type: 3}
+      propertyPath: startPoint
+      value: 
+      objectReference: {fileID: 121984232}
+    - target: {fileID: 1596774404342672610, guid: 8c37cca1496d3764f9abbf3963142adc, type: 3}
       propertyPath: positions.Array.data[0]
       value: 
       objectReference: {fileID: 909322203}
@@ -5485,6 +5495,10 @@ PrefabInstance:
       propertyPath: positions.Array.data[2]
       value: 
       objectReference: {fileID: 1355774263}
+    - target: {fileID: 4822199019621561167, guid: 8c37cca1496d3764f9abbf3963142adc, type: 3}
+      propertyPath: m_SortingOrder
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 8879332964483240390, guid: 8c37cca1496d3764f9abbf3963142adc, type: 3}
       propertyPath: m_Name
       value: Robot

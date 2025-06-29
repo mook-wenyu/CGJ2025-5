@@ -2,21 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Object : MonoBehaviour
+public class HidePoint : MonoBehaviour
 {
     public GameObject son;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void SetSonOrderToTop()
     {
@@ -25,7 +13,7 @@ public class Object : MonoBehaviour
             SpriteRenderer sr = son.GetComponent<SpriteRenderer>();
             if (sr != null)
             {
-                sr.sortingOrder = 9;
+                sr.sortingOrder = 10;
             }
         }
     }
@@ -38,7 +26,7 @@ public class Object : MonoBehaviour
             SpriteRenderer sr = son.GetComponent<SpriteRenderer>();
             if (sr != null)
             {
-                sr.sortingOrder = 11;
+                sr.sortingOrder = 12;
             }
         }
     }
