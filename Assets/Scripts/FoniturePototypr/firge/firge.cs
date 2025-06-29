@@ -20,7 +20,6 @@ public class Firge : MonoBehaviour
     private Furniture furniture;
 
     private bool hasStartedDelay = false;
-    private bool isCoolingDown = false;
     private bool isPaused = false;     // 是否暂停增长
     private bool isReady = false;
     private bool isFirstWait = false;
@@ -54,10 +53,9 @@ public class Firge : MonoBehaviour
 
     void Update()
     {
-
         if (!isReady) return;  // 没等够时间
 
-        if (!hasStartedDelay && !isCoolingDown && status == FurnitureStatus.Normal && currentAnger == furniture.startanger)
+        if (!hasStartedDelay && status == FurnitureStatus.Normal && currentAnger == furniture.startanger)
         {
             hasStartedDelay = true;
             float delay = Random.Range(furniture.minInterval, furniture.maxInterval + 1);
@@ -95,7 +93,7 @@ public class Firge : MonoBehaviour
     void StateTick()
     {
         if (!isReady) return;
-        if (isCoolingDown || isPaused) return;
+        if (isPaused) return;
 
 
         switch (status)
@@ -176,7 +174,6 @@ public class Firge : MonoBehaviour
         SwitchStatus(status);
         currentAnger = furniture.startanger;
 
-        isCoolingDown = false;
         hasStartedDelay = false;
         isPaused = false;
 

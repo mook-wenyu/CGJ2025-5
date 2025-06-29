@@ -11,6 +11,7 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
     [Header("World")]
     public GameObject kitchenRoot;
     public GameObject firgeGO;
+    public GameObject binGO;
 
 
     public GameObject bedroomRoot;
@@ -22,6 +23,7 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
     public Coroutine gameTimeCoroutine;
 
     private Firge firge;
+    private Bin bin;
 
     void Awake()
     {
@@ -30,6 +32,7 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
         gameTimeSlider.gameObject.SetActive(false);
 
         firge = firgeGO.transform.GetComponentInChildren<Firge>();
+        bin = binGO.transform.GetComponent<Bin>();
     }
 
     // Update is called once per frame
@@ -89,6 +92,9 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
             {
                 case "冰箱":
                     firge.Launch(furniture);
+                    break;
+                case "智能垃圾桶":
+                    bin.Launch(furniture);
                     break;
             }
         }

@@ -15,5 +15,5 @@ public static class Utils
 
     public static bool isVictory = false;
 
-    public const int MAX_LEVEL = 1;
+    public const int MAX_LEVEL = 2;
 }
