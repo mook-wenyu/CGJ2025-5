@@ -949,6 +949,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firgeScript: {fileID: 3966256894789593567}
   dialogueUI: {fileID: 8723822581383481858}
+  dialogueContent: {fileID: 4308653175038219767}
   selection1: {fileID: 1984525738561467168}
   selection2: {fileID: 7638517603687780020}
 --- !u!70 &4123005017516494055
@@ -998,6 +999,7 @@ GameObject:
   - component: {fileID: 508792102115867009}
   - component: {fileID: 5744728734251955085}
   - component: {fileID: 3159499852022794091}
+  - component: {fileID: 8564472017779887884}
   m_Layer: 5
   m_Name: dialogue
   m_TagString: Untagged
@@ -1090,6 +1092,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &8564472017779887884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8723822581383481858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f659cb4f6b962c4faa54cba2fe53af1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8796736051700852211
 GameObject:
   m_ObjectHideFlags: 0

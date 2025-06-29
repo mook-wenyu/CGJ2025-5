@@ -98,9 +98,8 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
     {
         while (true)
         {
-            yield return null;
-            //yield return new WaitForSeconds(1f);
-            Tween.UISliderValue(gameTimeSlider, gameTimeSlider.value + 1, 0f);
+            yield return new WaitForSeconds(1f);
+            Tween.UISliderValue(gameTimeSlider, gameTimeSlider.value + 1, 1f);
             if (gameTimeSlider.value >= time)
             {
                 break;

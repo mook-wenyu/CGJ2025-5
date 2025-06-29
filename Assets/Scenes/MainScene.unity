@@ -140,7 +140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &14091496
 RectTransform:
   m_ObjectHideFlags: 0
@@ -945,7 +945,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &229482128
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2505,7 +2505,7 @@ MonoBehaviour:
   failPanel: {fileID: 2137502434}
   tryAgainBtn: {fileID: 1979901653}
   backMainMenuBtn: {fileID: 1214252113}
-  endPanel: {fileID: 2137502434}
+  endPanel: {fileID: 14091495}
 --- !u!1 &815416355
 GameObject:
   m_ObjectHideFlags: 0
@@ -3984,7 +3984,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1168688886
 RectTransform:
   m_ObjectHideFlags: 0

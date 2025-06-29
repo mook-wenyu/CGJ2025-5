@@ -35,9 +35,11 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
         victoryPanel.GetComponent<Button>().onClick.AddListener(OnVictoryPanel);
         tryAgainBtn.GetComponent<Button>().onClick.AddListener(OnTryAgainBtn);
         backMainMenuBtn.GetComponent<Button>().onClick.AddListener(OnBackMainMenuBtn);
+        endPanel.GetComponent<Button>().onClick.AddListener(OnEndPanel);
 
         victoryPanel.SetActive(false);
         failPanel.SetActive(false);
+        endPanel.SetActive(false);
     }
 
     public void ShowVictoryPanel()
@@ -90,6 +92,9 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
         fgPanel.transform.localPosition = new Vector2(2660, 0);
         endPanel.SetActive(true);
         fgPanel.SetActive(true);
+
+        Tween.LocalPositionX(endPanel.transform, 0, 0.5f, ease: Ease.InOutCirc);
+        Tween.LocalPositionX(fgPanel.transform, 0, 0.5f, ease: Ease.InOutCirc);
     }
 
     public void ShowFailPanel(string name)
@@ -121,6 +126,11 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
     {
         Utils.isFailed = false;
         Utils.isVictory = false;
+        SceneManager.LoadScene("StartScene");
+    }
+
+    void OnEndPanel()
+    {
         SceneManager.LoadScene("StartScene");
     }
 

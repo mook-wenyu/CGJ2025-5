@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +11,6 @@ public class Firge : MonoBehaviour
     [Header("引用物体")]
     public GameObject sayObj;          // 子物体 say 的引用
     public GameObject dialogueUI;
-
 
     private SpriteRenderer sr;
     private FurnitureStatus status = FurnitureStatus.Normal;
@@ -26,10 +27,20 @@ public class Firge : MonoBehaviour
 
     private Coroutine launchCoroutine = null;
 
+    public List<ColdJokeConfig> dialogueContentList = new List<ColdJokeConfig>();
+
     void Awake()
     {
         sr = gameObject.GetComponent<SpriteRenderer>();
         isReady = false;
+
+        if (dialogueContentList.Count == 0)
+        {
+            CSVMgr.GetAll<ColdJokeConfig>().ForEach(config =>
+            {
+                dialogueContentList.Add(config);
+            });
+        }
     }
 
     void Start()
