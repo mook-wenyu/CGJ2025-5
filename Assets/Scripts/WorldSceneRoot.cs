@@ -96,6 +96,9 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
 
     IEnumerator GameTimeCoroutine(int time)
     {
+        gameTimeSlider.gameObject.SetActive(true);
+        gameTimeSlider.value = 0;
+
         while (true)
         {
             yield return new WaitForSeconds(1f);
