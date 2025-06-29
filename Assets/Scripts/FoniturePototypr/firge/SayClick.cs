@@ -1,5 +1,7 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SayClick : MonoBehaviour
 {
@@ -9,7 +11,8 @@ public class SayClick : MonoBehaviour
     public RectTransform selection1;  // 拖入 selection1 的 RectTransform
     public RectTransform selection2;  // 拖入 selection2 的 RectTransform
 
-    private int currentIndex = 0;
+    [HideInInspector]
+    public int currentIndex = 0;
 
     private void OnMouseDown()
     {
@@ -21,6 +24,20 @@ public class SayClick : MonoBehaviour
         if (dialogueUI != null)
         {
             currentIndex = Random.Range(0, firgeScript.dialogueContentList.Count);
+
+            selection1.gameObject.SetActive(true);
+            selection1.GetComponent<Button>().onClick.RemoveAllListeners();
+            selection1.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                dialogueContent.text = firgeScript.dialogueContentList[currentIndex].c2;
+                selection1.gameObject.SetActive(false);
+                selection2.gameObject.SetActive(false);
+                StartCoroutine(WaitForDialogue());
+            });
+
+
+            selection2.gameObject.SetActive(true);
+
             dialogueUI.SetActive(true);     // 显示对话框
 
             dialogueContent.text = firgeScript.dialogueContentList[currentIndex].c1;
@@ -38,6 +55,14 @@ public class SayClick : MonoBehaviour
                 Debug.Log("按钮位置未交换");
             }
         }
-        gameObject.SetActive(false);
+
+        GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
+    }
+
+    IEnumerator WaitForDialogue()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        firgeScript.SwitchToNormal();
     }
 }

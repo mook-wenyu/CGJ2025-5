@@ -107,7 +107,10 @@ public class Firge : MonoBehaviour
 
             case FurnitureStatus.Special:
                 if (sayObj != null && !sayObj.activeSelf)
+                {
                     sayObj.SetActive(true);
+                    sayObj.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                }
 
                 AngerTick();
                 Debug.Log($"状态1：愤怒值 = {currentAnger}");
@@ -187,7 +190,10 @@ public class Firge : MonoBehaviour
         isPaused = false;
 
         if (sayObj != null)
+        {
             sayObj.SetActive(true);
+            sayObj.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+        }
         dialogueUI.SetActive(false);
     }
 
