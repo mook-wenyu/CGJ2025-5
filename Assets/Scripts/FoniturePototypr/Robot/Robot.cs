@@ -78,7 +78,7 @@ public class Robot : MonoBehaviour
                 delay = 0f;
                 isFirstWait = false;
             }
-            Debug.Log($"空闲状态：等待 {delay:F1} 秒后移动");
+            Debug.Log($"状态0(正常)：扫地机器人将在 {furniture.waitTime:F1} 秒后进入状态1(特殊)");
             yield return new WaitForSeconds(delay);
 
             if (positions.Length == 0) yield break;
@@ -140,13 +140,12 @@ public class Robot : MonoBehaviour
     void AngerTick()
     {
         currentAnger++;
-        Debug.Log($"愤怒值 = {currentAnger}");
         if (currentAnger >= furniture.stageCrazy && status != FurnitureStatus.Crazy)
         {
             status = FurnitureStatus.Crazy;
             SwitchStatus(status);
             CancelInvoke(nameof(StateTick));
-            Debug.Log("进入状态3：家具暴走！");
+            Debug.Log("进入状态3：扫地机器人失控");
             LevelProgressPanel.Instance.ShowFailPanel(furniture.name);
             return;
         }
@@ -154,7 +153,7 @@ public class Robot : MonoBehaviour
         {
             status = FurnitureStatus.Dark;
             SwitchStatus(status);
-            Debug.Log("进入状态2：家具开始震动");
+            Debug.Log("进入状态2：扫地机器人黑化");
             return;
         }
     }
@@ -163,7 +162,6 @@ public class Robot : MonoBehaviour
     {
         if (status == FurnitureStatus.Special || status == FurnitureStatus.Dark)
         {
-            Debug.Log("点击家具：重置为状态0");
             SwitchToNormal();
         }
     }
@@ -185,6 +183,8 @@ public class Robot : MonoBehaviour
             StopCoroutine(moveCoroutine);
 
         StartCoroutine(IdleAndMoveLoop());
+
+        Debug.Log("进入状态0：扫地机器人恢复正常");
     }
 
     void Reset()

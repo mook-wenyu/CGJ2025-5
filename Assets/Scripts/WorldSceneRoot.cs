@@ -10,12 +10,14 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
 
     [Header("World")]
     public GameObject kitchenRoot;
+    public GameObject bedroomRoot;
+
     public GameObject firgeGO;
     public GameObject binGO;
     public GameObject robotGO;
-
-
-    public GameObject bedroomRoot;
+    public GameObject washMachineGO;
+    public GameObject kettleGO;
+    public GameObject airconditioningGO;
 
     public Button startBtn;
 
@@ -26,6 +28,13 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
     private Firge firge;
     private Bin bin;
     private Robot robot;
+    private WashMachine washMachine;
+    private Kettle kettle;
+    private Airconditioning airconditioning;
+
+    // 记录手机屏幕拖动起始点
+    Vector2? dragStartPos = null;
+    float dragThreshold = 100f; // 拖动阈值，单位像素
 
     void Awake()
     {
@@ -36,27 +45,90 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
         firge = firgeGO.transform.GetComponentInChildren<Firge>();
         bin = binGO.transform.GetComponent<Bin>();
         robot = robotGO.transform.GetComponent<Robot>();
+        washMachine = washMachineGO.transform.GetComponent<WashMachine>();
+        kettle = kettleGO.transform.GetComponent<Kettle>();
+        airconditioning = airconditioningGO.transform.GetComponent<Airconditioning>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.A))
+        if (Utils.isFailed || Utils.isVictory) return;
+
+        // 同时支持方向键、手机屏幕拖动和鼠标拖动
+
+        // 方向键支持
+        if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.LeftArrow))
         {
             if (mainCamera.transform.position.x >= 19.2f)
             {
                 Tween.PositionX(mainCamera.transform, 0f, 0.3f);
             }
         }
-        if (Input.GetKeyUp(KeyCode.D))
+        if (Input.GetKeyUp(KeyCode.D) || Input.GetKeyUp(KeyCode.RightArrow))
         {
             if (mainCamera.transform.position.x <= 0f)
             {
                 Tween.PositionX(mainCamera.transform, 19.2f, 0.3f);
             }
         }
+
+        // 手机屏幕拖动支持
+        if (Input.touchCount == 1)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began)
+            {
+                dragStartPos = touch.position;
+            }
+            else if (touch.phase == TouchPhase.Ended && dragStartPos.HasValue)
+            {
+                Vector2 dragEndPos = touch.position;
+                float deltaX = dragEndPos.x - dragStartPos.Value.x;
+                HandleSwipe(deltaX);
+                dragStartPos = null;
+            }
+        }
+
+        // 鼠标拖动支持
+        if (Input.touchCount == 0) // 避免和触屏冲突
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                dragStartPos = Input.mousePosition;
+            }
+            else if (Input.GetMouseButtonUp(0) && dragStartPos.HasValue)
+            {
+                Vector2 dragEndPos = Input.mousePosition;
+                float deltaX = dragEndPos.x - dragStartPos.Value.x;
+                HandleSwipe(deltaX);
+                dragStartPos = null;
+            }
+        }
     }
 
+    // 处理滑动手势
+    private void HandleSwipe(float deltaX)
+    {
+        if (Mathf.Abs(deltaX) > dragThreshold)
+        {
+            // 向左拖动，切换到右侧（因为内容向左移动）
+            if (deltaX < 0 && mainCamera.transform.position.x <= 0f)
+            {
+                Tween.PositionX(mainCamera.transform, 19.2f, 0.3f);
+            }
+            // 向右拖动，切换到左侧（因为内容向右移动）
+            else if (deltaX > 0 && mainCamera.transform.position.x >= 19.2f)
+            {
+                Tween.PositionX(mainCamera.transform, 0f, 0.3f);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 根据关卡配置初始化世界
+    /// </summary>
+    /// <param name="level"></param>
     public void ResetWorld(int level)
     {
         Utils.currentLevel = level;
@@ -64,7 +136,7 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
         gameTimeSlider.gameObject.SetActive(true);
         gameTimeSlider.value = 0;
 
-        var levelData = CSVMgr.Get<LevelConfigConfig>(level.ToString());
+        var levelData = CSVMgr.Get<LevelConfigConfig>(Utils.currentLevel.ToString());
         var time = levelData.time;
         gameTimeSlider.maxValue = time;
 
@@ -102,10 +174,23 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
                 case "扫地机器人":
                     robot.Launch(furniture);
                     break;
+                case "滚筒洗衣机":
+                    washMachine.Launch(furniture);
+                    break;
+                case "烧水壶":
+                    kettle.Launch(furniture);
+                    break;
+                case "空调":
+                    airconditioning.Launch(furniture);
+                    break;
             }
         }
     }
 
+    /// <summary>
+    /// 游戏时间流逝
+    /// </summary>
+    /// <param name="time"></param>
     IEnumerator GameTimeCoroutine(int time)
     {
         gameTimeSlider.gameObject.SetActive(true);

@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public enum Status
+public enum CockroachStatus
 {
     Move,
     Fly,
@@ -9,25 +9,29 @@ public enum Status
     FlyDie
 }
 
-public class cockroach : MonoBehaviour
+public class Cockroach : MonoBehaviour
 {
     public Transform[] positions;         // 路径点数组
     public float speed = 2f;              // 移动速度
     public float rotationSpeed = 360f;    // 旋转速度（度/秒）
-    public Status status = Status.Move;
+    public CockroachStatus status = CockroachStatus.Move;
     public Sprite[] imgs;
 
     private SpriteRenderer sr;
+
+    public int index = 0;
 
     private Coroutine moveCoroutine;
 
     private bool isfly = false;
 
-    void Start()
+    void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+    }
 
-        status = Status.Move;
+    void Start()
+    {
         SwitchStatus(status);
 
         if (positions.Length > 0)
@@ -43,7 +47,7 @@ public class cockroach : MonoBehaviour
         {
             if (isfly)
             {
-                status = Status.Fly;
+                status = CockroachStatus.Fly;
                 SwitchStatus(status);
             }
             else
@@ -68,10 +72,10 @@ public class cockroach : MonoBehaviour
                 if (direction != Vector3.zero)
                 {
                     Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, direction);
-                    if(status!=Status.Fly)
-                        targetRotation *= Quaternion.Euler(0, 0, -90);
+                    if (status != CockroachStatus.Fly)
+                        targetRotation *= Quaternion.Euler(0, 0, 90);
                     else
-                        targetRotation *= Quaternion.Euler(0, 0, -45);
+                        targetRotation *= Quaternion.Euler(0, 0, 45);
                     transform.rotation = Quaternion.RotateTowards(
                         transform.rotation,
                         targetRotation,
@@ -96,15 +100,15 @@ public class cockroach : MonoBehaviour
 
         if (moveCoroutine != null)
             StopCoroutine(moveCoroutine);
-        gameObject.transform.rotation = Quaternion.Euler(0, 0,0);
-        if (status==Status.Move)
+        gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+        if (status == CockroachStatus.Move)
         {
-            status = Status.Die;
+            status = CockroachStatus.Die;
             SwitchStatus(status);
         }
-        else if (status==Status.Fly)
+        else if (status == CockroachStatus.Fly)
         {
-            status = Status.FlyDie;
+            status = CockroachStatus.FlyDie;
             SwitchStatus(status);
         }
 
@@ -117,7 +121,7 @@ public class cockroach : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void SwitchStatus(Status newStatus)
+    void SwitchStatus(CockroachStatus newStatus)
     {
         sr.sprite = imgs[(int)newStatus];
     }

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7330801393376281048}
   - component: {fileID: 5554611914759297246}
   m_Layer: 0
-  m_Name: cockroach
+  m_Name: Cockroach
   m_TagString: Cockroach
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27,13 +27,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2308888225672768665}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 7.6, y: 3.68, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &396073127766228027
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingOrder: 20
   m_Sprite: {fileID: 21300000, guid: 4f761e1f2ee6836418f815f1d20bc5b9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 1
+  m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 2}
@@ -113,6 +113,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: ab05c366be89e1e42a4aeacdef1ecf72, type: 3}
   - {fileID: 21300000, guid: 44750d5c6eb9b3f4cbe1757803ce6231, type: 3}
   - {fileID: 21300000, guid: 8e86cd56acdba494598ce27dacbf7dc4, type: 3}
+  index: 0
 --- !u!61 &5554611914759297246
 BoxCollider2D:
   m_ObjectHideFlags: 0

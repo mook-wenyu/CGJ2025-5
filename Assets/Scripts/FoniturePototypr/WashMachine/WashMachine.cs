@@ -4,173 +4,186 @@ using UnityEngine;
 
 public class WashMachine : MonoBehaviour
 {
-    
-    private SpriteRenderer sr;
-
-    [Header("Í¼Æ¬")]
+    [Header("å›¾ç‰‡")]
     public Sprite[] imgs;
 
-
-    [Header("×´Ì¬ÀàĞÍ")]
-    public int type = 0;               // ¼Ò¾ß×´Ì¬
-
-    [Header("ÏÖÔÚµÄ·ßÅ­Öµ")]
-    public int anger = 0;              // ·ßÅ­Öµ
-
-    [Header("·ßÅ­ÖµÔö³¤ËÙ¶È(xÃëÔö³¤1)")]
-    public float negativespeed = 1f;   // ÇéĞ÷»ıÀÛËÙ¶È£¨Ãë£©
-
-    [Header("´¥·¢¼ä¸ô")]
-    public float starttime = 1f;
-    public float endtime = 10f;
-
-    [Header("×´Ì¬»ùÏßÖµ")]
-    public int startanger = 0;
-
-    [Header("½×¶ÎãĞÖµ")]
-    public int stage2 = 50;
-    public int stage3 = 100;
-
-    [Header("¿ªÊ¼µÈ´ıÊ±¼ä")]
-    public float waittime = 10f;
-    private bool isFirst_time_to_wait = false;
-    private bool isReady = false;
-
-    [Header("¸½¼Ó×°ÊÎ")]
-    public plant plantObj;  // ÍÏÈë plant GameObject
-    public GameObject face;
-    public SpriteRenderer fsr;
+    [Header("é™„åŠ è£…é¥°")]
     public Sprite[] faceimg;
+    public WMPlant plantObj;
+    public GameObject face;
+
+    private SpriteRenderer fsr;
+
+    private SpriteRenderer sr;
+
+    private Furniture furniture;
+
+    private FurnitureStatus status = FurnitureStatus.Normal;
+
+    private int currentAnger = 0;
+
+    private bool isFirstWait = false;
+    private bool isReady = false;
 
     private bool hasStartedDelay = false;
 
+    private Coroutine launchCoroutine = null;
+
+    void Awake()
+    {
+        sr = gameObject.GetComponent<SpriteRenderer>();
+        fsr = face.GetComponent<SpriteRenderer>();
+    }
+
     void Start()
     {
-        sr = GetComponent<SpriteRenderer>();
-        type = 0;
-        SwitchStatus(type);
-        anger = startanger;
-        fsr=face.GetComponent<SpriteRenderer>();
+        SwitchStatus(status);
         if (plantObj != null)
-            plantObj.gameObject.SetActive(false);  // Ä¬ÈÏ²»ÏÔÊ¾
-        face.gameObject.SetActive(false);
-        StartCoroutine(StartDelayed());
+            plantObj.gameObject.SetActive(false);  // é»˜è®¤ä¸æ˜¾ç¤º
+        face.SetActive(false);
     }
 
-    IEnumerator StartDelayed()
-    {
-        Debug.Log($"µÈ´ı {waittime} Ãëºó¿ªÊ¼ÔËĞĞ");
-        yield return new WaitForSeconds(waittime);
-
-        // µÈ´ı½áÊøºó¿ªÊ¼Ö´ĞĞÂß¼­
-        InvokeRepeating(nameof(StateTick), 0f, negativespeed);
-        isFirst_time_to_wait = true;
-        isReady = true;
-
-    }
     void Update()
     {
         if (!isReady) return;
-        // ×´Ì¬»Ö¸´Âß¼­
-        if (!hasStartedDelay && type == 0 && anger == 0)
+        // çŠ¶æ€æ¢å¤é€»è¾‘
+        if (!hasStartedDelay && status == FurnitureStatus.Normal && currentAnger == furniture.startanger)
         {
             hasStartedDelay = true;
-            float delay = Random.Range(1f, 10f);
-            if(isFirst_time_to_wait)
+            float delay = Random.Range(furniture.minInterval, furniture.maxInterval + 1);
+            if (isFirstWait)
             {
                 delay = 0f;
-                isFirst_time_to_wait= false;
+                isFirstWait = false;
             }
-            Debug.Log($"×´Ì¬0£º½«ÔÚ {delay:F1} Ãëºó½øÈë×´Ì¬1");
-            StartCoroutine(DelayToState1(delay));
+            StartCoroutine(SwitchToSpecial(delay));
+            Debug.Log($"çŠ¶æ€0(æ­£å¸¸)ï¼šæ»šç­’æ´—è¡£æœºå°†åœ¨ {furniture.waitTime:F1} ç§’åè¿›å…¥çŠ¶æ€1(ç‰¹æ®Š)");
         }
 
         if (plantObj != null)
         {
-            if (type == 1 || type == 2)
+            if (status == FurnitureStatus.Special || status == FurnitureStatus.Dark)
             {
                 if (!plantObj.gameObject.activeSelf)
-                    plantObj.StartRotate(type);  // ÏÔÉí²¢¿ªÊ¼Ğı×ª
+                    plantObj.StartRotate(status);  // æ˜¾èº«å¹¶å¼€å§‹æ—‹è½¬
             }
             else
             {
                 if (plantObj.gameObject.activeSelf)
-                    plantObj.StopRotate();       // ÒşÉí²¢Í£Ö¹Ğı×ª
+                    plantObj.StopRotate();       // éšèº«å¹¶åœæ­¢æ—‹è½¬
             }
         }
 
     }
 
-    private void OnMouseDown()
+    public void Launch(Furniture f)
     {
-        if(type >= 1 && type <= 2)
+        furniture = f;
+        Reset();
+        currentAnger = furniture.startanger;
+        if (launchCoroutine != null)
         {
-            InteractEvent();
+            StopCoroutine(launchCoroutine);
         }
+        launchCoroutine = StartCoroutine(LaunchCoroutine());
     }
+
+    IEnumerator LaunchCoroutine()
+    {
+        yield return new WaitForSeconds(furniture.waitTime);
+        isReady = true;
+        isFirstWait = true;
+        InvokeRepeating(nameof(StateTick), 0f, furniture.angerSpeed);
+    }
+
 
     void StateTick()
     {
-        if (type == 3)
-            return;
-        switch (type)
+        if (!isReady) return;
+
+        switch (status)
         {
-            case 1:
-                anger++;
-                Debug.Log($"×´Ì¬1£º·ßÅ­Öµ = {anger}");
-                if (anger >= stage2)
-                {
-                    type = 2;
-                    fsr.sprite = faceimg[1];
-                    face.gameObject.SetActive(true);
-                    SwitchStatus(type);
-                    Debug.Log("½øÈë×´Ì¬2£º¼Ò¾ß¿ªÊ¼Õğ¶¯");
-                }
+            case FurnitureStatus.Special:
+                AngerTick();
                 break;
 
-            case 2:
-                anger++;
-                Debug.Log($"×´Ì¬2£º·ßÅ­Öµ = {anger}");
-                if (anger >= stage3)
-                {
-                    type = 3;
-                    face.gameObject.SetActive(false);
-                    SwitchStatus(type);
-                    Debug.Log("½øÈë×´Ì¬3£º¼Ò¾ß±©×ß£¡");
-                    return;
-                }
+            case FurnitureStatus.Dark:
+                AngerTick();
                 break;
-
-
         }
     }
 
-    IEnumerator DelayToState1(float delay)
+    void AngerTick()
     {
-        yield return new WaitForSeconds(delay);
-        type = 1;
-        SwitchStatus(type);
-        fsr.sprite = faceimg[0];
-        face.gameObject.SetActive(true);
-        Debug.Log("×´Ì¬0µ¹¼ÆÊ±½áÊø£¬½øÈë×´Ì¬1£º¿ªÊ¼»ıÀÛ·ßÅ­");
+        currentAnger++;
+        if (currentAnger >= furniture.stageCrazy && status != FurnitureStatus.Crazy)
+        {
+            face.SetActive(false);
+            status = FurnitureStatus.Crazy;
+            SwitchStatus(status);
+            Debug.Log("è¿›å…¥çŠ¶æ€3ï¼šæ»šç­’æ´—è¡£æœºå¤±æ§");
+            LevelProgressPanel.Instance.ShowFailPanel(furniture.name);
+            return;
+        }
+        if (currentAnger >= furniture.stageDark && status != FurnitureStatus.Dark)
+        {
+            fsr.sprite = faceimg[1];
+            face.SetActive(true);
+            status = FurnitureStatus.Dark;
+            SwitchStatus(status);
+            Debug.Log("è¿›å…¥çŠ¶æ€2ï¼šæ»šç­’æ´—è¡£æœºé»‘åŒ–");
+            return;
+        }
     }
 
-    void CoolDownToZero()
+
+    private void OnMouseDown()
     {
-        type = 0;
-        SwitchStatus(type);
-        anger = 0;
-        face.gameObject.SetActive(false);
+        if (status == FurnitureStatus.Special || status == FurnitureStatus.Dark)
+        {
+            SwitchToNormal();
+        }
+    }
+
+    IEnumerator SwitchToSpecial(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        status = FurnitureStatus.Special;
+        SwitchStatus(status);
+        fsr.sprite = faceimg[0];
+        face.SetActive(true);
+        Debug.Log("è¿›å…¥çŠ¶æ€1ï¼šæ»šç­’æ´—è¡£æœºè¿›å…¥ç‰¹æ®ŠçŠ¶æ€");
+    }
+
+    void SwitchToNormal()
+    {
+        status = FurnitureStatus.Normal;
+        SwitchStatus(status);
+        face.SetActive(false);
         if (plantObj != null)
             plantObj.StopRotate();
+
+        currentAnger = furniture.startanger;
         hasStartedDelay = false;
+
+        Debug.Log("è¿›å…¥çŠ¶æ€0ï¼šæ»šç­’æ´—è¡£æœºæ¢å¤æ­£å¸¸");
     }
-    public void InteractEvent()
+
+    void Reset()
     {
-        CoolDownToZero();  
+        SwitchToNormal();
+        isReady = false;
+        isFirstWait = false;
+
+        if (launchCoroutine != null)
+        {
+            StopCoroutine(launchCoroutine);
+            CancelInvoke(nameof(StateTick));
+        }
     }
-    void SwitchStatus(int newStatus)
+
+    void SwitchStatus(FurnitureStatus newStatus)
     {
-        sr.sprite = imgs[newStatus];
+        sr.sprite = imgs[(int)newStatus];
     }
 }

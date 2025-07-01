@@ -1,36 +1,37 @@
-using Unity.VisualScripting;
+using System.Collections;
 using UnityEngine;
 
-public class airconditioning : MonoBehaviour
+public class Airconditioning : MonoBehaviour
 {
-    public enum Status
-    {
-        S0,
-        S1, 
-        S2, 
-        S3
-    }
-    private SpriteRenderer sr;
-    private Status status;
-
-    public int type = 0;
-
-    [Header("ÅĞ¶ÏÂ·¾¶µã")]
-    public Transform p2; // ×´Ì¬2´¥·¢µã
-    public Transform p3; // ×´Ì¬3´¥·¢µã
-    public float positionTolerance = 0.1f;
-    [Header("Í¼Æ¬")]
+    [Header("å›¾ç‰‡")]
     public Sprite[] imgs;
     public GameObject smoke;
 
-    
+    private SpriteRenderer sr;
+
+    private Furniture furniture;
+
+    private FurnitureStatus status = FurnitureStatus.Normal;
+
+    [Header("åˆ¤æ–­è·¯å¾„ç‚¹")]
+    public Transform p2; // çŠ¶æ€2è§¦å‘ç‚¹
+    public Transform p3; // çŠ¶æ€3è§¦å‘ç‚¹
+
+    public float positionTolerance = 0.1f;
+
+    public CockroachControl cockcontrol;
+
+    private Coroutine launchCoroutine = null;
 
     //public static bool isdie=false;
 
+    void Awake()
+    {
+        sr = gameObject.GetComponent<SpriteRenderer>();
+    }
+
     private void Start()
     {
-        sr=gameObject.GetComponent<SpriteRenderer>();
-        status = Status.S0;
         SwitchStatus(status);
         smoke.SetActive(false);
     }
@@ -39,59 +40,56 @@ public class airconditioning : MonoBehaviour
     {
         GameObject[] roaches = GameObject.FindGameObjectsWithTag("Cockroach");
 
-        // Ã»ÓĞó¯òë ¡ú ×´Ì¬0
+        // æ²¡æœ‰èŸ‘è‚ â†’ çŠ¶æ€0
         if (roaches.Length == 0)
         {
-            if (type != 0)
+            if (status != FurnitureStatus.Normal)
             {
-                type = 0;
-                status = Status.S0;
+                status = FurnitureStatus.Normal;
                 SwitchStatus(status);
                 smoke.SetActive(false);
-                Debug.Log("ÎŞó¯òë´æÔÚ ¡ú ×´Ì¬0");
+                Debug.Log("æ— èŸ‘è‚å­˜åœ¨ â†’ çŠ¶æ€0");
             }
             return;
         }
 
-        // ÓĞó¯òë³öÉú£¬µ±Ç°ÊÇ×´Ì¬0 ¡ú ×´Ì¬1
-        if (type == 0)
+        // æœ‰èŸ‘è‚å‡ºç”Ÿï¼Œå½“å‰æ˜¯çŠ¶æ€0 â†’ çŠ¶æ€1
+        if (status == FurnitureStatus.Normal)
         {
-            type = 1;
-            status = Status.S1;
+            status = FurnitureStatus.Special;
             SwitchStatus(status);
             smoke.SetActive(false);
-            Debug.Log("ó¯òë³öÉú ¡ú ×´Ì¬1");
+            Debug.Log("èŸ‘è‚å‡ºç”Ÿ â†’ çŠ¶æ€1");
         }
 
-        // ×´Ì¬1 ¡ú ×´Ì¬2£ºÈÎÒâó¯òëµ½´ï position2
-        if (type == 1)
+        // çŠ¶æ€1 â†’ çŠ¶æ€2ï¼šä»»æ„èŸ‘è‚åˆ°è¾¾ position2
+        if (status == FurnitureStatus.Special)
         {
             foreach (GameObject roach in roaches)
             {
                 if (Vector3.Distance(roach.transform.position, p2.position) <= positionTolerance)
                 {
-                    type = 2;
-                    status = Status.S2;
+                    status = FurnitureStatus.Dark;
                     SwitchStatus(status);
                     smoke.SetActive(true);
-                    Debug.Log("ÓĞó¯òëµ½´ï position2 ¡ú ×´Ì¬2");
+                    Debug.Log("æœ‰èŸ‘è‚åˆ°è¾¾ position2 â†’ çŠ¶æ€2");
                     break;
                 }
             }
         }
 
-        // ×´Ì¬2 ¡ú ×´Ì¬3£ºÈÎÒâó¯òëµ½´ï position3
-        if (type == 2)
+        // çŠ¶æ€2 â†’ çŠ¶æ€3ï¼šä»»æ„èŸ‘è‚åˆ°è¾¾ position3
+        if (status == FurnitureStatus.Dark)
         {
             foreach (GameObject roach in roaches)
             {
                 if (Vector3.Distance(roach.transform.position, p3.position) <= positionTolerance)
                 {
-                    type = 3;
-                    status = Status.S3;
+                    status = FurnitureStatus.Crazy;
                     SwitchStatus(status);
                     smoke.SetActive(false);
-                    Debug.Log("ÓĞó¯òëµ½´ï position3 ¡ú ×´Ì¬3");
+                    LevelProgressPanel.Instance.ShowFailPanel(furniture.name);
+                    Debug.Log("æœ‰èŸ‘è‚åˆ°è¾¾ position3 â†’ çŠ¶æ€3");
                     //isdie = true;
                     break;
                 }
@@ -99,7 +97,37 @@ public class airconditioning : MonoBehaviour
         }
     }
 
-    void SwitchStatus(Status newStatus)
+    public void Launch(Furniture f)
+    {
+        furniture = f;
+        Reset();
+
+        if (launchCoroutine != null)
+        {
+            StopCoroutine(launchCoroutine);
+        }
+        launchCoroutine = StartCoroutine(LaunchCoroutine());
+    }
+
+    IEnumerator LaunchCoroutine()
+    {
+        yield return new WaitForSeconds(furniture.waitTime);
+
+        cockcontrol.Launch(furniture);
+    }
+
+    void Reset()
+    {
+        if (launchCoroutine != null)
+        {
+            StopCoroutine(launchCoroutine);
+        }
+        launchCoroutine = null;
+
+        cockcontrol.Reset();
+    }
+
+    void SwitchStatus(FurnitureStatus newStatus)
     {
         sr.sprite = imgs[(int)newStatus];
     }

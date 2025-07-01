@@ -31,7 +31,6 @@ public class Bin : MonoBehaviour
     {
         sr = gameObject.GetComponent<SpriteRenderer>();
         btn = transform.Find("lid").GetComponent<BtnEntity>();
-        isReady = false;
     }
 
     void Start()
@@ -54,8 +53,8 @@ public class Bin : MonoBehaviour
                 delay = 0f;
                 isFirstWait = false;
             }
-            Debug.Log($"状态0：将在 {delay:F1} 秒后进入状态1");
             StartCoroutine(SwitchToSpecial(delay));
+            Debug.Log($"状态0(正常)：垃圾桶将在 {furniture.waitTime:F1} 秒后进入状态1(特殊)");
         }
     }
 
@@ -88,11 +87,9 @@ public class Bin : MonoBehaviour
         {
             case FurnitureStatus.Special:
                 AngerTick();
-                Debug.Log($"状态1：愤怒值 = {currentAnger}");
                 break;
             case FurnitureStatus.Dark:
                 AngerTick();
-                Debug.Log($"状态2：愤怒值 = {currentAnger}");
                 break;
         }
     }
@@ -112,7 +109,7 @@ public class Bin : MonoBehaviour
             btn.SetAlpha(0.001f);
             btn.OnClicked -= OnClicked;
 
-            Debug.Log("进入状态3：家具暴走！");
+            Debug.Log("进入状态3：垃圾桶失控");
             LevelProgressPanel.Instance.ShowFailPanel(furniture.name);
             return;
         }
@@ -120,7 +117,7 @@ public class Bin : MonoBehaviour
         {
             status = FurnitureStatus.Dark;
             SwitchStatus(status);
-            Debug.Log("进入状态2：家具开始震动");
+            Debug.Log("进入状态2：垃圾桶黑化");
             return;
         }
 
@@ -139,7 +136,7 @@ public class Bin : MonoBehaviour
         btn.SetSprite(lidOpen);
         btn.SetAlpha(0.01f);
         btn.OnClicked += OnClicked;
-        Debug.Log("进入状态1：开始积累愤怒");
+        Debug.Log("进入状态1：垃圾桶进入特殊状态");
     }
 
     void SwitchToNormal()
@@ -154,7 +151,7 @@ public class Bin : MonoBehaviour
 
         hasStartedDelay = false;
 
-        Debug.Log("怒气清空，回到状态0");
+        Debug.Log("进入状态0：垃圾桶恢复正常");
     }
 
     void Reset()

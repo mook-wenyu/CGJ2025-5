@@ -106,21 +106,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: b20754383dd927f4a8bab1583fcb805c, type: 3}
   - {fileID: 21300000, guid: 2605fc475444aa64d92af7b0ddca05e3, type: 3}
   - {fileID: 21300000, guid: 6a3e0fb5882e07341b081e1341a0d4b9, type: 3}
-  type: 0
-  anger: 0
-  negativespeed: 0.3
-  starttime: 1
-  endtime: 10
-  startanger: 0
-  stage2: 50
-  stage3: 100
-  waittime: 2
-  plantObj: {fileID: 5177412169929697228}
-  face: {fileID: 9029934531336741777}
-  fsr: {fileID: 0}
   faceimg:
   - {fileID: 21300000, guid: 7349c244b380f9f45b93cfb6c41de6e9, type: 3}
   - {fileID: 21300000, guid: 6471ceff71ec24845b084a86e3718aa8, type: 3}
+  plantObj: {fileID: 5444895503428820471}
+  face: {fileID: 9029934531336741777}
 --- !u!61 &2712569041956645118
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -176,7 +166,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4635034606458460758}
   - component: {fileID: 7021869011243664114}
-  - component: {fileID: 5177412169929697228}
+  - component: {fileID: 5444895503428820471}
   m_Layer: 0
   m_Name: plant
   m_TagString: Untagged
@@ -251,7 +241,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5177412169929697228
+--- !u!114 &5444895503428820471
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -260,7 +250,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 465801177408345001}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f25ee28c6e6085e489892f8cd8b79fd9, type: 3}
+  m_Script: {fileID: 11500000, guid: bc9c0302f20669f46bc77d1237a91089, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rotateSpeedType1: 50

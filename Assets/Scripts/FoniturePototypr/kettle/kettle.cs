@@ -4,164 +4,173 @@ using UnityEngine;
 
 public class Kettle : MonoBehaviour
 {
-    public enum Status
-    {
-        S0,
-        S1,
-        S2,
-        S3
-    }
-    private SpriteRenderer sr;
-    private Status status;
-
     [Header("图片")]
     public Sprite[] imgs;
 
-    [Header("状态类型")]
-    public int type = 0;               // 家具状态
+    public GameObject lidObj;
 
-    [Header("现在的愤怒值")]
-    public int anger = 0;              // 愤怒值
+    private SpriteRenderer sr;
 
-    [Header("愤怒值增长速度(x秒增长1)")]
-    public float negativespeed = 1f;   // 情绪积累速度（秒）
+    private Furniture furniture;
 
-    [Header("触发间隔")]
-    public float starttime = 1f;
-    public float endtime = 10f;
+    private int currentAnger = 0;
+    private FurnitureStatus status = FurnitureStatus.Normal;
 
-    [Header("状态基线值")]
-    public int startanger = 0;
-
-    [Header("阶段阈值")]
-    public int stage2 = 50;
-    public int stage3 = 100;
-
-    [Header("开始等待时间")]
-    public float waittime = 10f;
-    private bool isFirst_time_to_wait = false;
+    private bool isFirstWait = false;
     private bool isReady = false;
-
-    public head lid;
 
     private bool hasStartedDelay = false;
 
+    private KettleHead lid;
+
+    private Coroutine launchCoroutine = null;
+
+    void Awake()
+    {
+        sr = gameObject.GetComponent<SpriteRenderer>();
+        lid = lidObj.GetComponent<KettleHead>();
+        lid.SetOriginalPos(lidObj.transform.position);
+        Debug.Log("originalPos: " + lidObj.transform.position);
+    }
+
     void Start()
     {
-        type = 0;
-        sr = GetComponent<SpriteRenderer>();
-        status = Status.S0;
         SwitchStatus(status);
-        anger = startanger;
-        StartCoroutine(StartDelayed());
+        lidObj.SetActive(false);
     }
 
-    IEnumerator StartDelayed()
-    {
-        Debug.Log($"等待 {waittime} 秒后开始运行");
-        yield return new WaitForSeconds(waittime);
-
-        // 等待结束后开始执行逻辑
-        InvokeRepeating(nameof(StateTick), 0f, negativespeed);
-        isFirst_time_to_wait = true;
-        isReady = true;
-
-    }
     void Update()
     {
         if (!isReady) return;
+
         // 状态恢复逻辑
-        if (!hasStartedDelay && type == 0 && anger == 0)
+        if (!hasStartedDelay && status == FurnitureStatus.Normal && currentAnger == furniture.startanger)
         {
             hasStartedDelay = true;
-            float delay = Random.Range(1f, 10f);
-            if (isFirst_time_to_wait)
+            float delay = Random.Range(furniture.minInterval, furniture.maxInterval + 1);
+            if (isFirstWait)
             {
                 delay = 0f;
-                isFirst_time_to_wait = false;
+                isFirstWait = false;
             }
-            Debug.Log($"状态0：将在 {delay:F1} 秒后进入状态1");
-            StartCoroutine(DelayToState1(delay));
+            StartCoroutine(SwitchToSpecial(delay));
+            Debug.Log($"状态0(正常)：烧水壶将在 {furniture.waitTime:F1} 秒后进入状态1(特殊)");
         }
-        // 控制盖子的显隐和抖动
-        if (type == 1 || type == 2)
-        {
-            lid.StartShaking(type);
-        }
-        else
-        {
-            lid.StopShaking();
-        }
-
     }
 
-    private void OnMouseDown()
+    public void Launch(Furniture f)
     {
-        if (type >= 1 && type <= 2)
+        furniture = f;
+        Reset();
+        currentAnger = furniture.startanger;
+        if (launchCoroutine != null)
         {
-            InteractEvent();
+            StopCoroutine(launchCoroutine);
         }
+        launchCoroutine = StartCoroutine(LaunchCoroutine());
     }
 
+    IEnumerator LaunchCoroutine()
+    {
+        yield return new WaitForSeconds(furniture.waitTime);
+        isReady = true;
+        isFirstWait = true;
+        InvokeRepeating(nameof(StateTick), 0f, furniture.angerSpeed);
+    }
 
     void StateTick()
     {
-        if (type == 3)
-            return;
-        switch (type)
+        if (!isReady) return;
+
+        switch (status)
         {
-            case 1:
-                anger++;
-                Debug.Log($"状态1：愤怒值 = {anger}");
-                if (anger >= stage2)
-                {
-                    type = 2;
-                    status = Status.S2;
-                    SwitchStatus(status);
-                    Debug.Log("进入状态2：家具开始震动");
-                }
+            case FurnitureStatus.Special:
+                AngerTick();
                 break;
 
-            case 2:
-                anger++;
-                Debug.Log($"状态2：愤怒值 = {anger}");
-                if (anger >= stage3)
-                {
-                    type = 3;
-                    status = Status.S3;
-                    SwitchStatus(status);
-                    Debug.Log("进入状态3：家具暴走！");
-                    return;
-                }
+            case FurnitureStatus.Dark:
+                AngerTick();
                 break;
-
-
         }
     }
 
-    IEnumerator DelayToState1(float delay)
+    void AngerTick()
+    {
+        currentAnger++;
+        if (currentAnger >= furniture.stageCrazy && status != FurnitureStatus.Crazy)
+        {
+            status = FurnitureStatus.Crazy;
+            SwitchStatus(status);
+
+            lid.StopShaking();
+
+            Debug.Log("进入状态3：烧水壶失控");
+            LevelProgressPanel.Instance.ShowFailPanel(furniture.name);
+            return;
+        }
+        if (currentAnger >= furniture.stageDark && status != FurnitureStatus.Dark)
+        {
+            status = FurnitureStatus.Dark;
+            SwitchStatus(status);
+
+            lidObj.SetActive(true);
+            lid.StartShaking(status);
+
+            Debug.Log("进入状态2：烧水壶黑化");
+            return;
+        }
+    }
+
+
+    private void OnMouseDown()
+    {
+        if (status == FurnitureStatus.Special || status == FurnitureStatus.Dark)
+        {
+            SwitchToNormal();
+        }
+    }
+
+    IEnumerator SwitchToSpecial(float delay)
     {
         yield return new WaitForSeconds(delay);
-        type = 1;
-        status = Status.S1;
+        status = FurnitureStatus.Special;
         SwitchStatus(status);
+
+        lidObj.SetActive(true);
+        lid.StartShaking(status);
+
         hasStartedDelay = false;
-        Debug.Log("状态0倒计时结束，进入状态1：开始积累愤怒");
+
+        Debug.Log("进入状态1：烧水壶进入特殊状态");
     }
 
-    void CoolDownToZero()
+    void SwitchToNormal()
     {
-        type = 0;
-        anger = 0;
-        status = Status.S0;
+        status = FurnitureStatus.Normal;
         SwitchStatus(status);
-    }
-    public void InteractEvent()
-    {
-        CoolDownToZero();
+        currentAnger = furniture.startanger;
+        hasStartedDelay = false;
+
+        lid.StopShaking();
+
+        Debug.Log("进入状态0：烧水壶恢复正常");
     }
 
-    void SwitchStatus(Status newStatus)
+    void Reset()
+    {
+        SwitchToNormal();
+
+        isReady = false;
+        isFirstWait = false;
+
+        if (launchCoroutine != null)
+        {
+            StopCoroutine(launchCoroutine);
+            CancelInvoke(nameof(StateTick));
+        }
+    }
+
+    void SwitchStatus(FurnitureStatus newStatus)
     {
         sr.sprite = imgs[(int)newStatus];
     }

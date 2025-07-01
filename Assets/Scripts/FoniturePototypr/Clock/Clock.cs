@@ -20,7 +20,7 @@ public class Clock : MonoBehaviour
 
     private Furniture furniture;
 
-    private bool isPlaying = false;
+    private bool isReady = false;
     private bool isFirstWait = false;
     private bool hasStartedDelay = false;
     private Coroutine launchCoroutine = null;
@@ -30,7 +30,6 @@ public class Clock : MonoBehaviour
         clockH = transform.Find("ClockH");
         clockM = transform.Find("ClockM");
         sr = GetComponent<SpriteRenderer>();
-        isPlaying = false;
     }
 
     // Start is called before the first frame update
@@ -41,11 +40,11 @@ public class Clock : MonoBehaviour
 
     void Update()
     {
-        if (!isPlaying)
+        if (!isReady)
         {
             return;
         }
-        if (!hasStartedDelay && status == FurnitureStatus.Normal && currentAnger == 0)
+        if (!hasStartedDelay && status == FurnitureStatus.Normal && currentAnger == furniture.startanger)
         {
             hasStartedDelay = true;
             float delay = Random.Range(furniture.minInterval, furniture.maxInterval + 1);
@@ -55,6 +54,7 @@ public class Clock : MonoBehaviour
                 delay = 0f;
             }
             StartCoroutine(SwitchToSpecial(delay));
+            Debug.Log($"状态0(正常)：时钟将在 {furniture.waitTime:F1} 秒后进入状态1(特殊)");
             return;
         }
 
@@ -64,18 +64,8 @@ public class Clock : MonoBehaviour
     {
         if (status == FurnitureStatus.Special || status == FurnitureStatus.Dark)
         {
-            InteractEvent();
+            SwitchToNormal();
         }
-    }
-
-    /// <summary>
-    /// 交互事件
-    /// </summary>
-    void InteractEvent()
-    {
-        currentAnger = 0;
-        status = FurnitureStatus.Normal;
-        SwitchStatus(status);
     }
 
     /// <summary>
@@ -102,7 +92,7 @@ public class Clock : MonoBehaviour
     IEnumerator LaunchCoroutine()
     {
         yield return new WaitForSeconds(furniture.waitTime);
-        isPlaying = true;
+        isReady = true;
         isFirstWait = true;
         InvokeRepeating(nameof(StateTick), 0f, furniture.angerSpeed);
     }
@@ -112,7 +102,7 @@ public class Clock : MonoBehaviour
     /// </summary>
     void StateTick()
     {
-        if (!isPlaying)
+        if (!isReady)
             return;
 
         switch (status)
@@ -136,12 +126,15 @@ public class Clock : MonoBehaviour
         {
             status = FurnitureStatus.Crazy;
             SwitchStatus(status);
+            Debug.Log("进入状态3：时钟失控");
+            LevelProgressPanel.Instance.ShowFailPanel(furniture.name);
             return;
         }
         if (currentAnger >= furniture.stageDark && status != FurnitureStatus.Dark)
         {
             status = FurnitureStatus.Dark;
             SwitchStatus(status);
+            Debug.Log("进入状态2：时钟黑化");
             return;
         }
     }
@@ -158,22 +151,23 @@ public class Clock : MonoBehaviour
         status = FurnitureStatus.Special;
         SwitchStatus(status);
         hasStartedDelay = false;
+        Debug.Log("进入状态1：时钟进入特殊状态");
     }
 
     void SwitchToNormal()
     {
-        currentAnger = 0;
+        currentAnger = furniture.startanger;
         status = FurnitureStatus.Normal;
         SwitchStatus(status);
-
         hasStartedDelay = false;
+        Debug.Log("进入状态0：时钟恢复正常");
     }
 
     void Reset()
     {
         SwitchToNormal();
 
-        isPlaying = false;
+        isReady = false;
         isFirstWait = false;
 
         if (launchCoroutine != null)

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class plant : MonoBehaviour
+public class WMPlant : MonoBehaviour
 {
     public float rotateSpeedType1 = 50f;
     public float rotateSpeedType2 = 150f;
@@ -8,11 +8,11 @@ public class plant : MonoBehaviour
     private bool isRotating = false;
     private float currentSpeed = 0f;
 
-    public void StartRotate(int type)
+    public void StartRotate(FurnitureStatus status)
     {
-        if (type == 1)
+        if (status == FurnitureStatus.Special)
             currentSpeed = rotateSpeedType1;
-        else if (type == 2)
+        else if (status == FurnitureStatus.Dark)
             currentSpeed = rotateSpeedType2;
 
         isRotating = true;

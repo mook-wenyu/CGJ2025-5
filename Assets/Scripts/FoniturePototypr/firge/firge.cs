@@ -31,7 +31,6 @@ public class Firge : MonoBehaviour
     void Awake()
     {
         sr = gameObject.GetComponent<SpriteRenderer>();
-        isReady = false;
 
         if (dialogueContentList.Count == 0)
         {
@@ -64,8 +63,8 @@ public class Firge : MonoBehaviour
                 delay = 0f;
                 isFirstWait = false;
             }
-            Debug.Log($"状态0：将在 {delay:F1} 秒后进入状态1");
             StartCoroutine(SwitchToSpecial(delay));
+            Debug.Log($"状态0(正常)：冰箱将在 {furniture.waitTime:F1} 秒后进入状态1(特殊)");
         }
     }
 
@@ -111,12 +110,10 @@ public class Firge : MonoBehaviour
                 }
 
                 AngerTick();
-                Debug.Log($"状态1：愤怒值 = {currentAnger}");
                 break;
 
             case FurnitureStatus.Dark:
                 AngerTick();
-                Debug.Log($"状态2：愤怒值 = {currentAnger}");
                 break;
         }
     }
@@ -138,14 +135,14 @@ public class Firge : MonoBehaviour
 
             SwitchStatus(status);
             LevelProgressPanel.Instance.ShowFailPanel(furniture.name);
-            Debug.Log("进入状态3：家具暴走！");
+            Debug.Log("进入状态3：冰箱失控");
             return;
         }
         if (currentAnger >= furniture.stageDark && status != FurnitureStatus.Dark)
         {
             status = FurnitureStatus.Dark;
             SwitchStatus(status);
-            Debug.Log("进入状态2：家具开始震动");
+            Debug.Log("进入状态2：冰箱黑化");
             return;
         }
     }
@@ -157,6 +154,7 @@ public class Firge : MonoBehaviour
         status = FurnitureStatus.Special;
         SwitchStatus(status);
         hasStartedDelay = false;
+        Debug.Log("进入状态1：冰箱进入特殊状态");
     }
 
     //  交互行为：
@@ -168,8 +166,6 @@ public class Firge : MonoBehaviour
 
     public void SwitchToNormal()
     {
-        Debug.Log("怒气清零，回到状态0");
-
         status = FurnitureStatus.Normal;
         SwitchStatus(status);
         currentAnger = furniture.startanger;
@@ -180,6 +176,8 @@ public class Firge : MonoBehaviour
         if (sayObj != null)
             sayObj.SetActive(false);
         dialogueUI.SetActive(false);
+
+        Debug.Log("进入状态0：冰箱恢复正常");
     }
 
     public void ClickClose()
