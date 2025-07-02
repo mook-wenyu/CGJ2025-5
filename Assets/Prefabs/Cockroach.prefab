@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6471453655350358922}
   - component: {fileID: 396073127766228027}
   - component: {fileID: 7330801393376281048}
+  - component: {fileID: 446028613380860305}
   - component: {fileID: 5554611914759297246}
   m_Layer: 0
   m_Name: Cockroach
@@ -114,6 +115,22 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 44750d5c6eb9b3f4cbe1757803ce6231, type: 3}
   - {fileID: 21300000, guid: 8e86cd56acdba494598ce27dacbf7dc4, type: 3}
   index: 0
+--- !u!114 &446028613380860305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2308888225672768665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a81d6211ec6d5943bd98c08c49e959a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  transitionType: 0
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!61 &5554611914759297246
 BoxCollider2D:
   m_ObjectHideFlags: 0

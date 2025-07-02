@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 225383538998309704}
   - component: {fileID: 4822199019621561167}
   - component: {fileID: 1596774404342672610}
+  - component: {fileID: 1956832780391373908}
   - component: {fileID: 5484340249095233815}
   m_Layer: 0
   m_Name: Robot
@@ -109,6 +110,22 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   speed: 10
+--- !u!114 &1956832780391373908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8879332964483240390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a81d6211ec6d5943bd98c08c49e959a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  transitionType: 0
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!70 &5484340249095233815
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

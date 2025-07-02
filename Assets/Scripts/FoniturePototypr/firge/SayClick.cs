@@ -6,16 +6,15 @@ using UnityEngine.UI;
 public class SayClick : MonoBehaviour
 {
     public Firge firgeScript;         // 拖入 frige 脚本
-    public GameObject dialogueUI;     // 拖入 dialogue 对象（UI）
-    public TextMeshProUGUI dialogueContent;
-    public RectTransform selection1;  // 拖入 selection1 的 RectTransform
-    public RectTransform selection2;  // 拖入 selection2 的 RectTransform
+    public DialogueUI dialogueUI;
 
     [HideInInspector]
     public int currentIndex = 0;
 
-    private void OnMouseDown()
+    public void OnClicked()
     {
+        if (GameMgr.IsTimePaused) return;
+
         if (firgeScript != null)
         {
             firgeScript.PauseAngerGrowth(); // 暂停怒气值
@@ -25,28 +24,31 @@ public class SayClick : MonoBehaviour
         {
             currentIndex = Random.Range(0, firgeScript.dialogueContentList.Count);
 
-            selection1.gameObject.SetActive(true);
-            selection1.GetComponent<Button>().onClick.RemoveAllListeners();
-            selection1.GetComponent<Button>().onClick.AddListener(() =>
+            dialogueUI.selection1.gameObject.SetActive(true);
+            dialogueUI.selection1.GetComponent<Button>().onClick.RemoveAllListeners();
+            dialogueUI.selection1.GetComponent<Button>().onClick.AddListener(() =>
             {
-                dialogueContent.text = firgeScript.dialogueContentList[currentIndex].c2;
-                selection1.gameObject.SetActive(false);
-                selection2.gameObject.SetActive(false);
+                dialogueUI.Say(firgeScript.dialogueContentList[currentIndex].c2);
+                dialogueUI.selection1.gameObject.SetActive(false);
+                dialogueUI.selection2.gameObject.SetActive(false);
                 StartCoroutine(WaitForDialogue());
             });
 
 
-            selection2.gameObject.SetActive(true);
-
-            dialogueUI.SetActive(true);     // 显示对话框
-
-            dialogueContent.text = firgeScript.dialogueContentList[currentIndex].c1;
-            // 50% 概率交换两个按钮的位置
-            if (Random.value < 0.5f && selection1 != null && selection2 != null)
+            dialogueUI.selection2.gameObject.SetActive(true);
+            if (dialogueUI.selection2.GetComponent<Button>().onClick.GetPersistentEventCount() == 0)
             {
-                Vector3 tempPos = selection1.anchoredPosition;
-                selection1.anchoredPosition = selection2.anchoredPosition;
-                selection2.anchoredPosition = tempPos;
+                dialogueUI.selection2.GetComponent<Button>().onClick.AddListener(firgeScript.ClickClose);
+            }
+
+            dialogueUI.gameObject.SetActive(true);     // 显示对话框
+            dialogueUI.Say(firgeScript.dialogueContentList[currentIndex].c1);
+            // 50% 概率交换两个按钮的位置
+            if (Random.value < 0.5f && dialogueUI.selection1 != null && dialogueUI.selection2 != null)
+            {
+                Vector3 tempPos = dialogueUI.selection1.anchoredPosition;
+                dialogueUI.selection1.anchoredPosition = dialogueUI.selection2.anchoredPosition;
+                dialogueUI.selection2.anchoredPosition = tempPos;
 
                 Debug.Log("按钮位置已交换");
             }
@@ -61,7 +63,7 @@ public class SayClick : MonoBehaviour
 
     IEnumerator WaitForDialogue()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.5f / GameMgr.timeScale);
 
         firgeScript.SwitchToNormal();
     }

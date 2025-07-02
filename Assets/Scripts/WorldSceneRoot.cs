@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,8 +19,7 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
     public GameObject washMachineGO;
     public GameObject kettleGO;
     public GameObject airconditioningGO;
-
-    public Button startBtn;
+    public GameObject clockGO;
 
     private Camera mainCamera;
 
@@ -31,6 +31,9 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
     private WashMachine washMachine;
     private Kettle kettle;
     private Airconditioning airconditioning;
+    private Clock clock;
+
+    private int levelTime = 0;
 
     // 记录手机屏幕拖动起始点
     Vector2? dragStartPos = null;
@@ -48,12 +51,13 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
         washMachine = washMachineGO.transform.GetComponent<WashMachine>();
         kettle = kettleGO.transform.GetComponent<Kettle>();
         airconditioning = airconditioningGO.transform.GetComponent<Airconditioning>();
+        clock = clockGO.transform.GetComponent<Clock>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Utils.isFailed || Utils.isVictory) return;
+        if (GameMgr.isFailed || GameMgr.isVictory) return;
 
         // 同时支持方向键、手机屏幕拖动和鼠标拖动
 
@@ -131,27 +135,30 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
     /// <param name="level"></param>
     public void ResetWorld(int level)
     {
-        Utils.currentLevel = level;
+        level = 5;
+
+        GameMgr.currentLevel = level;
 
         gameTimeSlider.gameObject.SetActive(true);
         gameTimeSlider.value = 0;
 
-        var levelData = CSVMgr.Get<LevelConfigConfig>(Utils.currentLevel.ToString());
-        var time = levelData.time;
-        gameTimeSlider.maxValue = time;
+        var levelData = CSVMgr.Get<LevelConfigConfig>(GameMgr.currentLevel.ToString());
+        levelTime = levelData.time;
+        gameTimeSlider.maxValue = levelTime;
 
+        GameMgr.ResumeTime();
         if (gameTimeCoroutine != null)
         {
             StopCoroutine(gameTimeCoroutine);
         }
 
-        gameTimeCoroutine = StartCoroutine(GameTimeCoroutine(time));
+        gameTimeCoroutine = StartCoroutine(GameTimeCoroutine(levelTime));
 
         // 初始化家具配置
         for (int i = 0; i < levelData.content.Length; i++)
         {
             var content = levelData.content[i];
-            var furniture = new Furniture()
+            var furniture = new FurnitureData()
             {
                 name = content,
                 waitTime = levelData.first_show[i],
@@ -183,6 +190,9 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
                 case "空调":
                     airconditioning.Launch(furniture);
                     break;
+                case "时钟":
+                    clock.Launch(furniture);
+                    break;
             }
         }
     }
@@ -190,24 +200,25 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
     /// <summary>
     /// 游戏时间流逝
     /// </summary>
-    /// <param name="time"></param>
-    IEnumerator GameTimeCoroutine(int time)
+    /// <param name="totalTime"></param>
+    IEnumerator GameTimeCoroutine(int totalTime)
     {
-        gameTimeSlider.gameObject.SetActive(true);
-        gameTimeSlider.value = 0;
-
         while (true)
         {
-            yield return new WaitForSeconds(1f);
-            Tween.UISliderValue(gameTimeSlider, gameTimeSlider.value + 1, 1f);
-            if (gameTimeSlider.value >= time)
+            if (GameMgr.IsTimePaused) yield break;
+
+            yield return new WaitForSeconds(1f / GameMgr.timeScale);
+            Tween.UISliderValue(gameTimeSlider, gameTimeSlider.value + 1, 1f / GameMgr.timeScale);
+            if (gameTimeSlider.value >= totalTime)
             {
                 break;
             }
         }
 
+        GameMgr.PauseTime();
+
         gameTimeSlider.gameObject.SetActive(false);
-        if (Utils.currentLevel < Utils.MAX_LEVEL)
+        if (GameMgr.currentLevel < GameMgr.MAX_LEVEL)
         {
             LevelProgressPanel.Instance.ShowVictoryPanel();
         }
@@ -216,5 +227,4 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
             LevelProgressPanel.Instance.ShowEndPanel();
         }
     }
-
 }

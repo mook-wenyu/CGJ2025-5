@@ -42,6 +42,12 @@ public class KettleHead : MonoBehaviour
         // float finalPos = 0f;
         while (true)
         {
+            // 在暂停时持续等待，直到游戏恢复
+            while (GameMgr.IsTimePaused)
+            {
+                yield return null;
+            }
+
             Vector2 offset = new(
                 Random.Range(-shakeAmount * type, shakeAmount * type),
                 Random.Range(-shakeAmount * type, shakeAmount * type)
@@ -49,7 +55,18 @@ public class KettleHead : MonoBehaviour
 
             transform.position = originalPos + offset;
 
-            yield return new WaitForSeconds(interval);
+            float waitTime = interval / GameMgr.timeScale;
+            float elapsedTime = 0f;
+            
+            while (elapsedTime < waitTime)
+            {
+                // 在暂停时持续等待，直到游戏恢复
+                if (!GameMgr.IsTimePaused)
+                {
+                    elapsedTime += Time.deltaTime;
+                }
+                yield return null;
+            }
         }
     }
 }

@@ -27,9 +27,9 @@ public class WMPlant : MonoBehaviour
 
     void Update()
     {
-        if (isRotating)
+        if (isRotating && !GameMgr.IsTimePaused)
         {
-            transform.Rotate(0, 0, currentSpeed * Time.deltaTime);
+            transform.Rotate(0, 0, currentSpeed * GameMgr.timeScale * Time.deltaTime);
         }
     }
 }

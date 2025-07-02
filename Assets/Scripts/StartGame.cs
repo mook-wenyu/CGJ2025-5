@@ -19,7 +19,7 @@ public class StartGame : MonoBehaviour
         PrimeTweenConfig.warnEndValueEqualsCurrent = false;
         PrimeTweenConfig.defaultEase = Ease.Linear;
 
-        Utils.isInitGame = true;
+        GameMgr.isInitGame = true;
 
         playGameBtn.onClick.AddListener(OnPlayGame);
         zhiZuoRenBtn.onClick.AddListener(OnZhiZuoRen);
@@ -33,7 +33,7 @@ public class StartGame : MonoBehaviour
 
     void Start()
     {
-        Utils.currentLevel = 1;
+        GameMgr.currentLevel = 1;
 
         AudioMgr.Instance.PlayMusic("bgm1");
     }

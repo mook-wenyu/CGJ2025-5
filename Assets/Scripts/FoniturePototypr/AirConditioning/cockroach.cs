@@ -28,6 +28,7 @@ public class Cockroach : MonoBehaviour
     void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+        GetComponent<SpriteButton>().onClick.AddListener(OnClicked);
     }
 
     void Start()
@@ -58,14 +59,15 @@ public class Cockroach : MonoBehaviour
 
             while (Vector3.Distance(transform.position, target) > 0.05f)
             {
-                //if (airconditioning.isdie)
-                //{
-                //    break;
-                //}
+                while (GameMgr.IsTimePaused)
+                {
+                    yield return null;
+                }
+
                 transform.position = Vector3.MoveTowards(
                     transform.position,
                     target,
-                    speed * Time.deltaTime
+                    speed * GameMgr.timeScale * Time.deltaTime
                 );
 
                 Vector3 direction = (target - transform.position).normalized;
@@ -79,21 +81,33 @@ public class Cockroach : MonoBehaviour
                     transform.rotation = Quaternion.RotateTowards(
                         transform.rotation,
                         targetRotation,
-                        rotationSpeed * Time.deltaTime
+                        rotationSpeed * GameMgr.timeScale * Time.deltaTime
                     );
                 }
 
                 yield return null;
             }
 
-            yield return new WaitForSeconds(0.1f);
+            float waitTime = 0.1f / GameMgr.timeScale;
+            float elapsedTime = 0f;
+            
+            while (elapsedTime < waitTime)
+            {
+                if (!GameMgr.IsTimePaused)
+                {
+                    elapsedTime += Time.deltaTime;
+                }
+                yield return null;
+            }
         }
 
         Debug.Log("所有路径点已到达");
     }
 
-    void OnMouseDown()
+    private void OnClicked()
     {
+        if (GameMgr.IsTimePaused) return;
+
         //if (airconditioning.isdie)
         //    return;
         Debug.Log("点击了蟑螂，将在1.5秒后销毁");
@@ -117,7 +131,18 @@ public class Cockroach : MonoBehaviour
 
     IEnumerator DestroyAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(delay);
+        float waitTime = delay / GameMgr.timeScale;
+        float elapsedTime = 0f;
+        
+        while (elapsedTime < waitTime)
+        {
+            if (!GameMgr.IsTimePaused)
+            {
+                elapsedTime += Time.deltaTime;
+            }
+            yield return null;
+        }
+        
         Destroy(gameObject);
     }
 

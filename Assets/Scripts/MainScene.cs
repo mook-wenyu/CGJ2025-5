@@ -21,7 +21,7 @@ public class MainScene : MonoBehaviour
 
     private void Awake()
     {
-        if (!Utils.isInitGame)
+        if (!GameMgr.isInitGame)
         {
             SceneManager.LoadScene("StartScene");
         }
@@ -81,7 +81,7 @@ public class MainScene : MonoBehaviour
         {
             initStartPanel.SetActive(false);
 
-            WorldSceneRoot.Instance.ResetWorld(Utils.currentLevel);
+            WorldSceneRoot.Instance.ResetWorld(GameMgr.currentLevel);
         });
     }
 }

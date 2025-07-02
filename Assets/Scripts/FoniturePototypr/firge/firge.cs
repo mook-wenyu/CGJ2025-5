@@ -10,21 +10,23 @@ public class Firge : MonoBehaviour
 
     [Header("引用物体")]
     public GameObject sayObj;          // 子物体 say 的引用
-    public GameObject dialogueUI;
+    public GameObject dialogueUIObj;
 
     private SpriteRenderer sr;
     private FurnitureStatus status = FurnitureStatus.Normal;
 
     private int currentAnger = 0;              // 愤怒值
 
-    private Furniture furniture;
+    private FurnitureData furniture;
 
     private bool hasStartedDelay = false;
-    private bool isPaused = false;     // 是否暂停增长
     private bool isReady = false;
     private bool isFirstWait = false;
 
     private Coroutine launchCoroutine = null;
+    private Coroutine stateTickLoop = null;
+
+    private DialogueUI dialogueUI;
 
     public List<ColdJokeConfig> dialogueContentList = new List<ColdJokeConfig>();
 
@@ -39,6 +41,13 @@ public class Firge : MonoBehaviour
                 dialogueContentList.Add(config);
             });
         }
+
+        dialogueUI = dialogueUIObj.GetComponent<DialogueUI>();
+        if (sayObj != null)
+        {
+            sayObj.SetActive(true);
+            sayObj.GetComponent<SpriteButton>().onClick.AddListener(sayObj.GetComponent<SayClick>().OnClicked);
+        }
     }
 
     void Start()
@@ -47,7 +56,7 @@ public class Firge : MonoBehaviour
 
         if (sayObj != null)
             sayObj.SetActive(false); // 初始隐藏
-        dialogueUI.SetActive(false);
+        dialogueUI.HideDialogue();
     }
 
     void Update()
@@ -64,11 +73,10 @@ public class Firge : MonoBehaviour
                 isFirstWait = false;
             }
             StartCoroutine(SwitchToSpecial(delay));
-            Debug.Log($"状态0(正常)：冰箱将在 {furniture.waitTime:F1} 秒后进入状态1(特殊)");
         }
     }
 
-    public void Launch(Furniture f)
+    public void Launch(FurnitureData f)
     {
         furniture = f;
         Reset();
@@ -83,17 +91,42 @@ public class Firge : MonoBehaviour
 
     IEnumerator LaunchCoroutine()
     {
-        yield return new WaitForSeconds(furniture.waitTime);
+        float waitTime = furniture.waitTime / GameMgr.timeScale;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < waitTime)
+        {
+            // 在暂停时持续等待，直到游戏恢复
+            if (!GameMgr.IsTimePaused)
+            {
+                elapsedTime += Time.deltaTime;
+            }
+            yield return null;
+        }
+
         isReady = true;
         isFirstWait = true;
-        InvokeRepeating(nameof(StateTick), 0f, furniture.angerSpeed);
+        stateTickLoop = StartCoroutine(StateTickLoop());
+    }
+
+    IEnumerator StateTickLoop()
+    {
+        while (true)
+        {
+            // 在暂停时持续等待，直到游戏恢复
+            while (GameMgr.IsTimePaused)
+            {
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(furniture.angerSpeed / GameMgr.timeScale);
+            StateTick();
+        }
     }
 
     void StateTick()
     {
-        if (!isReady) return;
-        if (isPaused) return;
-
+        if (GameMgr.IsTimePaused || !isReady) return;
 
         switch (status)
         {
@@ -118,7 +151,6 @@ public class Firge : MonoBehaviour
         }
     }
 
-
     /// <summary>
     /// 愤怒值更新
     /// </summary>
@@ -131,7 +163,7 @@ public class Firge : MonoBehaviour
 
             if (sayObj != null)
                 sayObj.SetActive(false);
-            dialogueUI.SetActive(false);
+            dialogueUI.HideDialogue();
 
             SwitchStatus(status);
             LevelProgressPanel.Instance.ShowFailPanel(furniture.name);
@@ -149,7 +181,17 @@ public class Firge : MonoBehaviour
 
     IEnumerator SwitchToSpecial(float delay)
     {
-        yield return new WaitForSeconds(delay);
+        float elapsedTime = 0f;
+
+        while (elapsedTime < delay)
+        {
+            // 在暂停时持续等待，直到游戏恢复
+            if (!GameMgr.IsTimePaused)
+            {
+                elapsedTime += Time.deltaTime;
+            }
+            yield return null;
+        }
 
         status = FurnitureStatus.Special;
         SwitchStatus(status);
@@ -160,8 +202,7 @@ public class Firge : MonoBehaviour
     //  交互行为：
     public void PauseAngerGrowth()
     {
-        isPaused = true;
-        Debug.Log(isPaused ? "已暂停怒气增长" : "怒气恢复增长");
+        GameMgr.PauseTime();
     }
 
     public void SwitchToNormal()
@@ -171,39 +212,45 @@ public class Firge : MonoBehaviour
         currentAnger = furniture.startanger;
 
         hasStartedDelay = false;
-        isPaused = false;
+        GameMgr.ResumeTime();
 
         if (sayObj != null)
             sayObj.SetActive(false);
-        dialogueUI.SetActive(false);
+        dialogueUI.HideDialogue();
 
         Debug.Log("进入状态0：冰箱恢复正常");
     }
 
     public void ClickClose()
     {
-        isPaused = false;
+        GameMgr.ResumeTime();
 
         if (sayObj != null)
         {
             sayObj.SetActive(true);
             sayObj.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
         }
-        dialogueUI.SetActive(false);
+        dialogueUI.HideDialogue();
     }
 
     void Reset()
     {
+        if (launchCoroutine != null)
+        {
+            StopCoroutine(launchCoroutine);
+        }
+        launchCoroutine = null;
+
+        if (stateTickLoop != null)
+        {
+            StopCoroutine(stateTickLoop);
+        }
+        stateTickLoop = null;
+
         SwitchToNormal();
 
         isReady = false;
         isFirstWait = false;
-
-        if (launchCoroutine != null)
-        {
-            StopCoroutine(launchCoroutine);
-            CancelInvoke(nameof(StateTick));
-        }
     }
 
     void SwitchStatus(FurnitureStatus newStatus)

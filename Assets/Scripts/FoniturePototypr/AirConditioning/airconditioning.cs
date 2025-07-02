@@ -9,7 +9,7 @@ public class Airconditioning : MonoBehaviour
 
     private SpriteRenderer sr;
 
-    private Furniture furniture;
+    private FurnitureData furniture;
 
     private FurnitureStatus status = FurnitureStatus.Normal;
 
@@ -97,7 +97,7 @@ public class Airconditioning : MonoBehaviour
         }
     }
 
-    public void Launch(Furniture f)
+    public void Launch(FurnitureData f)
     {
         furniture = f;
         Reset();
@@ -111,7 +111,7 @@ public class Airconditioning : MonoBehaviour
 
     IEnumerator LaunchCoroutine()
     {
-        yield return new WaitForSeconds(furniture.waitTime);
+        yield return new WaitForSeconds(furniture.waitTime / GameMgr.timeScale);
 
         cockcontrol.Launch(furniture);
     }

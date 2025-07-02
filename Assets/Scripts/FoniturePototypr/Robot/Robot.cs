@@ -14,17 +14,17 @@ public class Robot : MonoBehaviour
 
     private int currentAnger = 0;
 
-    private Furniture furniture;
-
+    private FurnitureData furniture;
 
     public Transform startPoint;
     [Header("所有目标位置")]
     public Transform[] positions;
 
     [Header("移动速度")]
-    public float speed = 2f;
+    public float speed = 10f;
 
     private Coroutine launchCoroutine = null;
+    private Coroutine stateTickLoop = null;
 
     private bool isFirstWait = false;
     private Coroutine moveCoroutine;
@@ -34,6 +34,7 @@ public class Robot : MonoBehaviour
     void Awake()
     {
         sr = gameObject.GetComponent<SpriteRenderer>();
+        GetComponent<SpriteButton>().onClick.AddListener(OnClicked);
     }
 
     void Start()
@@ -41,7 +42,7 @@ public class Robot : MonoBehaviour
         SwitchStatus(status);
     }
 
-    public void Launch(Furniture f)
+    public void Launch(FurnitureData f)
     {
         furniture = f;
         Reset();
@@ -58,9 +59,20 @@ public class Robot : MonoBehaviour
 
     IEnumerator LaunchCoroutine()
     {
-        yield return new WaitForSeconds(furniture.waitTime);
+        float waitTime = furniture.waitTime / GameMgr.timeScale;
+        float elapsedTime = 0f;
+        
+        while (elapsedTime < waitTime)
+        {
+            // 在暂停时持续等待，直到游戏恢复
+            if (!GameMgr.IsTimePaused)
+            {
+                elapsedTime += Time.deltaTime;
+            }
+            yield return null;
+        }
+        
         isFirstWait = true;
-
         StartCoroutine(IdleAndMoveLoop());
     }
 
@@ -78,8 +90,17 @@ public class Robot : MonoBehaviour
                 delay = 0f;
                 isFirstWait = false;
             }
-            Debug.Log($"状态0(正常)：扫地机器人将在 {furniture.waitTime:F1} 秒后进入状态1(特殊)");
-            yield return new WaitForSeconds(delay);
+            
+            float elapsedTime = 0f;
+            while (elapsedTime < delay / GameMgr.timeScale)
+            {
+                // 在暂停时持续等待，直到游戏恢复
+                if (!GameMgr.IsTimePaused)
+                {
+                    elapsedTime += Time.deltaTime;
+                }
+                yield return null;
+            }
 
             if (positions.Length == 0) yield break;
 
@@ -101,14 +122,20 @@ public class Robot : MonoBehaviour
     {
         while (Vector3.Distance(transform.position, target.position) > 0.05f)
         {
+            // 在暂停时持续等待，直到游戏恢复
+            while (GameMgr.IsTimePaused)
+            {
+                yield return null;
+            }
+            
             transform.position = Vector3.MoveTowards(
                 transform.position,
                 target.position,
-                speed * Time.deltaTime
+                speed * GameMgr.timeScale * Time.deltaTime
             );
             yield return null;
         }
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.5f / GameMgr.timeScale);
         Debug.Log("已到达目标点，进入状态1");
         orderCtrl = target.GetComponent<HidePoint>();
         if (orderCtrl != null)
@@ -120,9 +147,23 @@ public class Robot : MonoBehaviour
         status = FurnitureStatus.Special;
         SwitchStatus(status);
 
-        InvokeRepeating(nameof(StateTick), 0f, furniture.angerSpeed);
+        stateTickLoop = StartCoroutine(StateTickLoop());
     }
 
+    IEnumerator StateTickLoop()
+    {
+        while (true)
+        {
+            // 在暂停时持续等待，直到游戏恢复
+            while (GameMgr.IsTimePaused)
+            {
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(furniture.angerSpeed / GameMgr.timeScale);
+            StateTick();
+        }
+    }
 
     void StateTick()
     {
@@ -144,7 +185,11 @@ public class Robot : MonoBehaviour
         {
             status = FurnitureStatus.Crazy;
             SwitchStatus(status);
-            CancelInvoke(nameof(StateTick));
+            if (stateTickLoop != null)
+            {
+                StopCoroutine(stateTickLoop);
+            }
+            stateTickLoop = null;
             Debug.Log("进入状态3：扫地机器人失控");
             LevelProgressPanel.Instance.ShowFailPanel(furniture.name);
             return;
@@ -153,23 +198,30 @@ public class Robot : MonoBehaviour
         {
             status = FurnitureStatus.Dark;
             SwitchStatus(status);
+
             Debug.Log("进入状态2：扫地机器人黑化");
             return;
         }
     }
 
-    private void OnMouseDown()
+    private void OnClicked()
     {
+        if (GameMgr.IsTimePaused) return;
+
         if (status == FurnitureStatus.Special || status == FurnitureStatus.Dark)
         {
             SwitchToNormal();
         }
     }
 
-
     void SwitchToNormal()
     {
-        CancelInvoke(nameof(StateTick));
+        if (stateTickLoop != null)
+        {
+            StopCoroutine(stateTickLoop);
+        }
+        stateTickLoop = null;
+
         status = FurnitureStatus.Normal;
         SwitchStatus(status);
         currentAnger = furniture.startanger;
@@ -189,19 +241,25 @@ public class Robot : MonoBehaviour
 
     void Reset()
     {
-        transform.position = new Vector2(startPoint.position.x, transform.position.y);
-
-        SwitchToNormal();
-
-
         if (launchCoroutine != null)
         {
             StopCoroutine(launchCoroutine);
         }
+        launchCoroutine = null;
+
+        if (stateTickLoop != null)
+        {
+            StopCoroutine(stateTickLoop);
+        }
+        stateTickLoop = null;
+
+        transform.position = new Vector2(startPoint.position.x, transform.position.y);
+        SwitchToNormal();
     }
 
     void SwitchStatus(FurnitureStatus newStatus)
     {
         sr.sprite = imgs[(int)newStatus];
     }
+
 }

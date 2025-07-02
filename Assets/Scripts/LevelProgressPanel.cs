@@ -44,22 +44,24 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
 
     public void ShowVictoryPanel()
     {
-        if (Utils.isFailed || Utils.isVictory)
+        if (GameMgr.isFailed || GameMgr.isVictory)
         {
             return;
         }
-        Utils.isVictory = true;
-        Utils.isFailed = false;
+
+        GameMgr.PauseTime();
+        GameMgr.isVictory = true;
+        GameMgr.isFailed = false;
 
         victoryPanel.transform.localPosition = new Vector2(1920, 0);
         fgPanel.transform.localPosition = new Vector2(2660, 0);
         victoryPanel.SetActive(true);
         fgPanel.SetActive(true);
 
-        if (Utils.currentLevel < Utils.MAX_LEVEL)
+        if (GameMgr.currentLevel < GameMgr.MAX_LEVEL)
         {
-            levelProgressScrollbar.value = progress[Utils.currentLevel];
-            levelProgressText.text = GetLevelProgressText(Utils.currentLevel + 1);
+            levelProgressScrollbar.value = progress[GameMgr.currentLevel];
+            levelProgressText.text = GetLevelProgressText(GameMgr.currentLevel + 1);
         }
         Tween.LocalPositionX(victoryPanel.transform, 0, 0.5f, ease: Ease.InOutCirc);
         Tween.LocalPositionX(fgPanel.transform, 0, 0.5f, ease: Ease.InOutCirc);
@@ -67,12 +69,10 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
 
     void OnVictoryPanel()
     {
-        Tween.LocalPositionX(fgPanel.transform, -2660, 0.5f, ease: Ease.InOutCirc).OnComplete(() =>
-        {
-            fgPanel.SetActive(false);
-        });
+        Tween.LocalPositionX(fgPanel.transform, -2660, 0.5f, ease: Ease.InOutCirc);
         Tween.LocalPositionX(victoryPanel.transform, -1920, 0.5f, ease: Ease.InOutCirc).OnComplete(() =>
         {
+            fgPanel.SetActive(false);
             victoryPanel.SetActive(false);
             NextLevel();
         });
@@ -80,13 +80,14 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
 
     public void ShowEndPanel()
     {
-        if (Utils.isFailed || Utils.isVictory)
+        if (GameMgr.isFailed || GameMgr.isVictory)
         {
             return;
         }
 
-        Utils.isVictory = true;
-        Utils.isFailed = false;
+        GameMgr.PauseTime();
+        GameMgr.isVictory = true;
+        GameMgr.isFailed = false;
 
         endPanel.transform.localPosition = new Vector2(1920, 0);
         fgPanel.transform.localPosition = new Vector2(2660, 0);
@@ -99,12 +100,14 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
 
     public void ShowFailPanel(string name)
     {
-        if (Utils.isFailed || Utils.isVictory)
+        if (GameMgr.isFailed || GameMgr.isVictory)
         {
             return;
         }
-        Utils.isVictory = false;
-        Utils.isFailed = true;
+
+        GameMgr.PauseTime();
+        GameMgr.isVictory = false;
+        GameMgr.isFailed = true;
 
         if (WorldSceneRoot.Instance.gameTimeCoroutine != null)
         {
@@ -117,15 +120,15 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
     void OnTryAgainBtn()
     {
         failPanel.SetActive(false);
-        Utils.isFailed = false;
-        Utils.isVictory = false;
-        WorldSceneRoot.Instance.ResetWorld(Utils.currentLevel);
+        GameMgr.isFailed = false;
+        GameMgr.isVictory = false;
+        WorldSceneRoot.Instance.ResetWorld(GameMgr.currentLevel);
     }
 
     void OnBackMainMenuBtn()
     {
-        Utils.isFailed = false;
-        Utils.isVictory = false;
+        GameMgr.isFailed = false;
+        GameMgr.isVictory = false;
         SceneManager.LoadScene("StartScene");
     }
 
@@ -136,10 +139,10 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
 
     void NextLevel()
     {
-        Utils.currentLevel++;
-        Utils.isFailed = false;
-        Utils.isVictory = false;
-        WorldSceneRoot.Instance.ResetWorld(Utils.currentLevel);
+        GameMgr.currentLevel++;
+        GameMgr.isFailed = false;
+        GameMgr.isVictory = false;
+        WorldSceneRoot.Instance.ResetWorld(GameMgr.currentLevel);
     }
 
     string GetLevelProgressText(int level)

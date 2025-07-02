@@ -11,7 +11,7 @@ public class Kettle : MonoBehaviour
 
     private SpriteRenderer sr;
 
-    private Furniture furniture;
+    private FurnitureData furniture;
 
     private int currentAnger = 0;
     private FurnitureStatus status = FurnitureStatus.Normal;
@@ -24,13 +24,14 @@ public class Kettle : MonoBehaviour
     private KettleHead lid;
 
     private Coroutine launchCoroutine = null;
+    private Coroutine stateTickLoop = null;
 
     void Awake()
     {
         sr = gameObject.GetComponent<SpriteRenderer>();
         lid = lidObj.GetComponent<KettleHead>();
         lid.SetOriginalPos(lidObj.transform.position);
-        Debug.Log("originalPos: " + lidObj.transform.position);
+        GetComponent<SpriteButton>().onClick.AddListener(OnClicked);
     }
 
     void Start()
@@ -58,7 +59,7 @@ public class Kettle : MonoBehaviour
         }
     }
 
-    public void Launch(Furniture f)
+    public void Launch(FurnitureData f)
     {
         furniture = f;
         Reset();
@@ -72,10 +73,37 @@ public class Kettle : MonoBehaviour
 
     IEnumerator LaunchCoroutine()
     {
-        yield return new WaitForSeconds(furniture.waitTime);
+        float waitTime = furniture.waitTime;
+        float elapsedTime = 0f;
+        
+        while (elapsedTime < waitTime)
+        {
+            // 在暂停时持续等待，直到游戏恢复
+            if (!GameMgr.IsTimePaused)
+            {
+                elapsedTime += Time.deltaTime;
+            }
+            yield return null;
+        }
+        
         isReady = true;
         isFirstWait = true;
-        InvokeRepeating(nameof(StateTick), 0f, furniture.angerSpeed);
+        stateTickLoop = StartCoroutine(StateTickLoop());
+    }
+
+    IEnumerator StateTickLoop()
+    {
+        while (true)
+        {
+            // 在暂停时持续等待，直到游戏恢复
+            while (GameMgr.IsTimePaused)
+            {
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(furniture.angerSpeed / GameMgr.timeScale);
+            StateTick();
+        }
     }
 
     void StateTick()
@@ -122,8 +150,10 @@ public class Kettle : MonoBehaviour
     }
 
 
-    private void OnMouseDown()
+    private void OnClicked()
     {
+        if (GameMgr.IsTimePaused) return;
+
         if (status == FurnitureStatus.Special || status == FurnitureStatus.Dark)
         {
             SwitchToNormal();
@@ -132,7 +162,19 @@ public class Kettle : MonoBehaviour
 
     IEnumerator SwitchToSpecial(float delay)
     {
-        yield return new WaitForSeconds(delay);
+        float waitTime = delay / GameMgr.timeScale;
+        float elapsedTime = 0f;
+        
+        while (elapsedTime < waitTime)
+        {
+            // 在暂停时持续等待，直到游戏恢复
+            if (!GameMgr.IsTimePaused)
+            {
+                elapsedTime += Time.deltaTime;
+            }
+            yield return null;
+        }
+        
         status = FurnitureStatus.Special;
         SwitchStatus(status);
 
@@ -158,16 +200,22 @@ public class Kettle : MonoBehaviour
 
     void Reset()
     {
+        if (launchCoroutine != null)
+        {
+            StopCoroutine(launchCoroutine);
+        }
+        launchCoroutine = null;
+
+        if (stateTickLoop != null)
+        {
+            StopCoroutine(stateTickLoop);
+        }
+        stateTickLoop = null;
+
         SwitchToNormal();
 
         isReady = false;
         isFirstWait = false;
-
-        if (launchCoroutine != null)
-        {
-            StopCoroutine(launchCoroutine);
-            CancelInvoke(nameof(StateTick));
-        }
     }
 
     void SwitchStatus(FurnitureStatus newStatus)

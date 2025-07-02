@@ -18,18 +18,37 @@ public class Clock : MonoBehaviour
     /// </summary>
     private int currentAnger = 0;
 
-    private Furniture furniture;
+    private FurnitureData furniture;
 
     private bool isReady = false;
     private bool isFirstWait = false;
     private bool hasStartedDelay = false;
     private Coroutine launchCoroutine = null;
+    private Coroutine stateTickLoop = null;
+    private SpriteButton sBtn;
+
+    // 时针旋转速度（度/秒）
+    private float hourRotateSpeed = 5f;
+    // 分针旋转速度（度/秒）
+    private float minuteRotateSpeed = 60f;
+    // 特殊状态下的速度倍率
+    private float specialSpeedMultiplier = 20f;
+    // 黑化状态下的速度倍率
+    private float darkSpeedMultiplier = 60f;
+    // 是否反向旋转
+    private bool reverseRotation = false;
+    // 随机方向变化计时器
+    private float directionChangeTimer = 0f;
+    // 随机方向变化间隔
+    private float directionChangeInterval = 4f;
 
     void Awake()
     {
         clockH = transform.Find("ClockH");
         clockM = transform.Find("ClockM");
         sr = GetComponent<SpriteRenderer>();
+        sBtn = GetComponent<SpriteButton>();
+        sBtn.onClick.AddListener(OnClicked);
     }
 
     // Start is called before the first frame update
@@ -40,10 +59,13 @@ public class Clock : MonoBehaviour
 
     void Update()
     {
-        if (!isReady)
-        {
-            return;
-        }
+        if (GameMgr.IsTimePaused) return;
+
+        // 更新时钟指针旋转
+        UpdateClockHands();
+
+        if (!isReady) return;
+
         if (!hasStartedDelay && status == FurnitureStatus.Normal && currentAnger == furniture.startanger)
         {
             hasStartedDelay = true;
@@ -54,14 +76,76 @@ public class Clock : MonoBehaviour
                 delay = 0f;
             }
             StartCoroutine(SwitchToSpecial(delay));
-            Debug.Log($"状态0(正常)：时钟将在 {furniture.waitTime:F1} 秒后进入状态1(特殊)");
             return;
         }
-
     }
 
-    private void OnMouseDown()
+    /// <summary>
+    /// 更新时钟指针旋转
+    /// </summary>
+    private void UpdateClockHands()
     {
+        float hourSpeed = hourRotateSpeed;
+        float minuteSpeed = minuteRotateSpeed;
+
+        // 根据状态调整旋转速度和行为
+        switch (status)
+        {
+            case FurnitureStatus.Normal:
+                // 正常状态下，正常旋转
+                reverseRotation = false;
+                break;
+
+            case FurnitureStatus.Special:
+                // 特殊状态下，加快旋转
+                hourSpeed *= specialSpeedMultiplier;
+                minuteSpeed *= specialSpeedMultiplier;
+
+                // 随机切换旋转方向
+                directionChangeTimer += Time.deltaTime;
+                if (directionChangeTimer >= directionChangeInterval)
+                {
+                    directionChangeTimer = 0f;
+                    reverseRotation = !reverseRotation;
+                }
+                break;
+
+            case FurnitureStatus.Dark:
+                // 黑化状态下，更快旋转
+                hourSpeed *= darkSpeedMultiplier;
+                minuteSpeed *= darkSpeedMultiplier;
+
+                // 更频繁地随机切换旋转方向
+                directionChangeTimer += Time.deltaTime;
+                if (directionChangeTimer >= directionChangeInterval / 2f)
+                {
+                    directionChangeTimer = 0f;
+                    reverseRotation = !reverseRotation;
+                }
+                break;
+
+            case FurnitureStatus.Crazy:
+                // 失控状态下，指针停止转动
+                return;
+        }
+
+        // 应用旋转
+        float direction = reverseRotation ? -1f : 1f;
+        if (clockH != null)
+        {
+            clockH.Rotate(0, 0, -hourSpeed * direction * Time.deltaTime);
+        }
+
+        if (clockM != null)
+        {
+            clockM.Rotate(0, 0, -minuteSpeed * direction * Time.deltaTime);
+        }
+    }
+
+    private void OnClicked()
+    {
+        if (GameMgr.IsTimePaused) return;
+
         if (status == FurnitureStatus.Special || status == FurnitureStatus.Dark)
         {
             SwitchToNormal();
@@ -71,17 +155,11 @@ public class Clock : MonoBehaviour
     /// <summary>
     /// 启动
     /// </summary>
-    public void Launch(Furniture f)
+    public void Launch(FurnitureData f)
     {
         furniture = f;
-
         Reset();
 
-        currentAnger = furniture.startanger;
-        if (launchCoroutine != null)
-        {
-            StopCoroutine(launchCoroutine);
-        }
         launchCoroutine = StartCoroutine(LaunchCoroutine());
     }
 
@@ -94,7 +172,22 @@ public class Clock : MonoBehaviour
         yield return new WaitForSeconds(furniture.waitTime);
         isReady = true;
         isFirstWait = true;
-        InvokeRepeating(nameof(StateTick), 0f, furniture.angerSpeed);
+        stateTickLoop = StartCoroutine(StateTickLoop());
+    }
+
+    IEnumerator StateTickLoop()
+    {
+        while (true)
+        {
+            // 在暂停时持续等待，直到游戏恢复
+            while (GameMgr.IsTimePaused)
+            {
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(furniture.angerSpeed / GameMgr.timeScale);
+            StateTick();
+        }
     }
 
     /// <summary>
@@ -102,8 +195,7 @@ public class Clock : MonoBehaviour
     /// </summary>
     void StateTick()
     {
-        if (!isReady)
-            return;
+        if (GameMgr.IsTimePaused || !isReady) return;
 
         switch (status)
         {
@@ -134,6 +226,8 @@ public class Clock : MonoBehaviour
         {
             status = FurnitureStatus.Dark;
             SwitchStatus(status);
+            GameMgr.Instance.SetTimeScale(GameMgr.TIME_SCALE_DARK);
+
             Debug.Log("进入状态2：时钟黑化");
             return;
         }
@@ -146,11 +240,24 @@ public class Clock : MonoBehaviour
     /// <returns>协程</returns>
     IEnumerator SwitchToSpecial(float delay)
     {
-        yield return new WaitForSeconds(delay);
+        float elapsedTime = 0f;
+
+        while (elapsedTime < delay)
+        {
+            // 在暂停时持续等待，直到游戏恢复
+            if (!GameMgr.IsTimePaused)
+            {
+                elapsedTime += Time.deltaTime;
+            }
+            yield return null;
+        }
 
         status = FurnitureStatus.Special;
         SwitchStatus(status);
+
+        GameMgr.Instance.SetTimeScale(GameMgr.TIME_SCALE_SPECIAL);
         hasStartedDelay = false;
+
         Debug.Log("进入状态1：时钟进入特殊状态");
     }
 
@@ -159,22 +266,29 @@ public class Clock : MonoBehaviour
         currentAnger = furniture.startanger;
         status = FurnitureStatus.Normal;
         SwitchStatus(status);
+        GameMgr.Instance.SetTimeScale(1f);
         hasStartedDelay = false;
+        directionChangeTimer = 0f;
+        reverseRotation = false;
         Debug.Log("进入状态0：时钟恢复正常");
     }
 
     void Reset()
     {
-        SwitchToNormal();
-
-        isReady = false;
-        isFirstWait = false;
-
         if (launchCoroutine != null)
         {
             StopCoroutine(launchCoroutine);
-            CancelInvoke(nameof(StateTick));
         }
+        launchCoroutine = null;
+        if (stateTickLoop != null)
+        {
+            StopCoroutine(stateTickLoop);
+        }
+        stateTickLoop = null;
+
+        SwitchToNormal();
+        isReady = false;
+        isFirstWait = false;
     }
 
     /// <summary>
@@ -185,4 +299,5 @@ public class Clock : MonoBehaviour
     {
         sr.sprite = imgs[(int)newStatus];
     }
+
 }
