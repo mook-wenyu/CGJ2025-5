@@ -7,6 +7,10 @@ public class Airconditioning : MonoBehaviour
     public Sprite[] imgs;
     public GameObject smoke;
 
+    private GameObject partsObj;
+
+    private Shake shake;
+
     private SpriteRenderer sr;
 
     private FurnitureData furniture;
@@ -28,6 +32,10 @@ public class Airconditioning : MonoBehaviour
     void Awake()
     {
         sr = gameObject.GetComponent<SpriteRenderer>();
+        shake = new Shake(this, transform.localPosition);
+        var p = transform.Find("Parts");
+        if (p) partsObj = p.gameObject;
+        if (partsObj) partsObj.SetActive(false);
     }
 
     private void Start()
@@ -59,6 +67,7 @@ public class Airconditioning : MonoBehaviour
             status = FurnitureStatus.Special;
             SwitchStatus(status);
             smoke.SetActive(false);
+            if (partsObj) partsObj.SetActive(false);
             Debug.Log("蟑螂出生 → 状态1");
         }
 
@@ -72,6 +81,7 @@ public class Airconditioning : MonoBehaviour
                     status = FurnitureStatus.Dark;
                     SwitchStatus(status);
                     smoke.SetActive(true);
+                    if (partsObj) partsObj.SetActive(true);
                     Debug.Log("有蟑螂到达 position2 → 状态2");
                     break;
                 }
@@ -124,11 +134,33 @@ public class Airconditioning : MonoBehaviour
         }
         launchCoroutine = null;
 
+        shake.StopShaking();
+
         cockcontrol.Reset();
     }
 
     void SwitchStatus(FurnitureStatus newStatus)
     {
         sr.sprite = imgs[(int)newStatus];
+
+        // 根据状态控制抖动
+        switch (newStatus)
+        {
+            case FurnitureStatus.Normal:
+                shake.StopShaking();
+                break;
+            case FurnitureStatus.Special:
+                shake.SetSpecialShakeMultiplier();
+                shake.StartShaking();
+                break;
+            case FurnitureStatus.Dark:
+                shake.SetDarkShakeMultiplier();
+                shake.StartShaking();
+                break;
+            case FurnitureStatus.Crazy:
+                // Crazy状态停止抖动
+                shake.StopShaking();
+                break;
+        }
     }
 }

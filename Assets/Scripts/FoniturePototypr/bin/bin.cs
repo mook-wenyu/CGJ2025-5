@@ -1,130 +1,27 @@
 using System.Collections;
 using UnityEngine;
 
-public class Bin : MonoBehaviour
+public class Bin : Furniture
 {
-    [Header("图片")]
-    public Sprite[] imgs;
-
     public GameObject lid;
     public Sprite lidOpen;
     public Sprite lidClose;
 
-    private SpriteRenderer sr;
+    private SpriteButton lidBtn;
 
-    private FurnitureStatus status = FurnitureStatus.Normal;
-
-    private int currentAnger = 0;              // 愤怒值
-
-    private FurnitureData furniture;
-
-    private bool isFirstWait = false;
-    private bool isReady = false;
-
-    private bool hasStartedDelay = false;
-
-    private Coroutine launchCoroutine = null;
-    private Coroutine stateTickLoop = null;
-
-    private SpriteButton btn;
-
-    void Awake()
+    protected override void StartFurniture()
     {
-        sr = gameObject.GetComponent<SpriteRenderer>();
-        btn = transform.Find("lid").GetComponent<SpriteButton>();
-    }
-
-    void Start()
-    {
-        SwitchStatus(status);
+        base.StartFurniture();
+        lidBtn = transform.Find("lid").GetComponent<SpriteButton>();
         lid.SetActive(true);
-        btn.SetSprite(lidClose);
-        btn.SetAlpha(1f);
-    }
-
-    void Update()
-    {
-        if (!isReady) return;
-        if (!hasStartedDelay && status == FurnitureStatus.Normal && currentAnger == furniture.startanger)
-        {
-            hasStartedDelay = true;
-            float delay = Random.Range(furniture.minInterval, furniture.maxInterval + 1);
-            if (isFirstWait)
-            {
-                delay = 0f;
-                isFirstWait = false;
-            }
-            StartCoroutine(SwitchToSpecial(delay));
-        }
-    }
-
-    public void Launch(FurnitureData f)
-    {
-        furniture = f;
-        Reset();
-
-        currentAnger = furniture.startanger;
-        if (launchCoroutine != null)
-        {
-            StopCoroutine(launchCoroutine);
-        }
-        launchCoroutine = StartCoroutine(LaunchCoroutine());
-    }
-
-    IEnumerator LaunchCoroutine()
-    {
-        float waitTime = furniture.waitTime / GameMgr.timeScale;
-        float elapsedTime = 0f;
-        
-        while (elapsedTime < waitTime)
-        {
-            // 在暂停时持续等待，直到游戏恢复
-            if (!GameMgr.IsTimePaused)
-            {
-                elapsedTime += Time.deltaTime;
-            }
-            yield return null;
-        }
-        
-        isReady = true;
-        isFirstWait = true;
-        stateTickLoop = StartCoroutine(StateTickLoop());
-    }
-
-    IEnumerator StateTickLoop()
-    {
-        while (true)
-        {
-            // 在暂停时持续等待，直到游戏恢复
-            while (GameMgr.IsTimePaused)
-            {
-                yield return null;
-            }
-
-            yield return new WaitForSeconds(furniture.angerSpeed / GameMgr.timeScale);
-            StateTick();
-        }
-    }
-
-    void StateTick()
-    {
-        if (!isReady) return;
-
-        switch (status)
-        {
-            case FurnitureStatus.Special:
-                AngerTick();
-                break;
-            case FurnitureStatus.Dark:
-                AngerTick();
-                break;
-        }
+        lidBtn.SetSprite(lidClose);
+        lidBtn.SetAlpha(1f);
     }
 
     /// <summary>
     /// 愤怒值更新
     /// </summary>
-    void AngerTick()
+    protected override void AngerTick()
     {
         currentAnger++;
         if (currentAnger >= furniture.stageCrazy && status != FurnitureStatus.Crazy)
@@ -132,9 +29,9 @@ public class Bin : MonoBehaviour
             status = FurnitureStatus.Crazy;
             SwitchStatus(status);
 
-            btn.SetSprite(lidOpen);
-            btn.SetAlpha(0.001f);
-            btn.onClick.RemoveAllListeners();
+            lidBtn.SetSprite(lidOpen);
+            lidBtn.SetAlpha(0.001f);
+            lidBtn.onClick.RemoveAllListeners();
 
             Debug.Log("进入状态3：垃圾桶失控");
             LevelProgressPanel.Instance.ShowFailPanel(furniture.name);
@@ -150,71 +47,29 @@ public class Bin : MonoBehaviour
 
     }
 
-    private void OnClicked()
+    protected override IEnumerator SwitchToSpecial(float delay)
     {
-        SwitchToNormal();
-    }
+        yield return StartCoroutine(base.SwitchToSpecial(delay));
 
-    IEnumerator SwitchToSpecial(float delay)
-    {
-        float waitTime = delay / GameMgr.timeScale;
-        float elapsedTime = 0f;
-        
-        while (elapsedTime < waitTime)
-        {
-            // 在暂停时持续等待，直到游戏恢复
-            if (!GameMgr.IsTimePaused)
-            {
-                elapsedTime += Time.deltaTime;
-            }
-            yield return null;
-        }
-        
-        status = FurnitureStatus.Special;
-        SwitchStatus(status);
-        btn.SetSprite(lidOpen);
-        btn.SetAlpha(0.01f);
-        btn.onClick.AddListener(OnClicked);
+        lidBtn.SetSprite(lidOpen);
+        lidBtn.SetAlpha(0.01f);
+        lidBtn.onClick.AddListener(OnClicked);
         Debug.Log("进入状态1：垃圾桶进入特殊状态");
     }
 
-    void SwitchToNormal()
+    protected override void SwitchToNormal()
     {
-        status = FurnitureStatus.Normal;
-        SwitchStatus(status);
-        btn.SetSprite(lidClose);
-        btn.SetAlpha(1f);
-        btn.onClick.RemoveAllListeners();
+        base.SwitchToNormal();
 
-        currentAnger = furniture.startanger;
-
-        hasStartedDelay = false;
-
+        lidBtn.SetSprite(lidClose);
+        lidBtn.SetAlpha(1f);
+        lidBtn.onClick.RemoveAllListeners();
         Debug.Log("进入状态0：垃圾桶恢复正常");
     }
 
-    void Reset()
+    protected override void SwitchStatus(FurnitureStatus newStatus)
     {
-        if (launchCoroutine != null)
-        {
-            StopCoroutine(launchCoroutine);
-        }
-        launchCoroutine = null;
-
-        if (stateTickLoop != null)
-        {
-            StopCoroutine(stateTickLoop);
-        }
-        stateTickLoop = null;
-
-        SwitchToNormal();
-
-        isReady = false;
-        isFirstWait = false;
-    }
-
-    void SwitchStatus(FurnitureStatus newStatus)
-    {
-        sr.sprite = imgs[(int)newStatus];
+        animator.SetInteger("bin_status", (int)newStatus);
+        base.SwitchStatus(newStatus);
     }
 }

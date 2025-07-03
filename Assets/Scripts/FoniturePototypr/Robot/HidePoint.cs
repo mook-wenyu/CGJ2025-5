@@ -13,11 +13,10 @@ public class HidePoint : MonoBehaviour
             SpriteRenderer sr = son.GetComponent<SpriteRenderer>();
             if (sr != null)
             {
-                sr.sortingOrder = 10;
+                sr.sortingOrder = 9;
             }
         }
     }
-
 
     public void SetSonOrderToBottom()
     {
@@ -26,7 +25,7 @@ public class HidePoint : MonoBehaviour
             SpriteRenderer sr = son.GetComponent<SpriteRenderer>();
             if (sr != null)
             {
-                sr.sortingOrder = 12;
+                sr.sortingOrder = 13;
             }
         }
     }

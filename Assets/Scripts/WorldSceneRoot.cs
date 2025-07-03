@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
@@ -83,7 +84,11 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
             Touch touch = Input.GetTouch(0);
             if (touch.phase == TouchPhase.Began)
             {
-                dragStartPos = touch.position;
+                // 检查触摸点是否在UI上
+                if (!IsPointerOverUI(touch.position))
+                {
+                    dragStartPos = touch.position;
+                }
             }
             else if (touch.phase == TouchPhase.Ended && dragStartPos.HasValue)
             {
@@ -99,7 +104,11 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
         {
             if (Input.GetMouseButtonDown(0))
             {
-                dragStartPos = Input.mousePosition;
+                // 检查鼠标点击是否在UI上
+                if (!IsPointerOverUI(Input.mousePosition))
+                {
+                    dragStartPos = Input.mousePosition;
+                }
             }
             else if (Input.GetMouseButtonUp(0) && dragStartPos.HasValue)
             {
@@ -109,6 +118,26 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
                 dragStartPos = null;
             }
         }
+    }
+
+    // 检查指针是否在UI元素上
+    private bool IsPointerOverUI(Vector2 screenPosition)
+    {
+        // 使用EventSystem检查是否点击在UI上
+        if (EventSystem.current != null)
+        {
+            PointerEventData eventData = new(EventSystem.current)
+            {
+                position = screenPosition
+            };
+
+            List<RaycastResult> results = new();
+            EventSystem.current.RaycastAll(eventData, results);
+
+            return results.Count > 0;
+        }
+
+        return false;
     }
 
     // 处理滑动手势
@@ -135,8 +164,7 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
     /// <param name="level"></param>
     public void ResetWorld(int level)
     {
-        level = 5;
-
+        // level = 2;
         GameMgr.currentLevel = level;
 
         gameTimeSlider.gameObject.SetActive(true);
@@ -169,6 +197,8 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
                 stageDark = (int)levelData.stage_2_threshold[i],
                 stageCrazy = (int)levelData.stage_3_threshold[i],
             };
+
+            // if (content != "扫地机器人") continue;
 
             switch (content)
             {
@@ -205,22 +235,32 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
     {
         while (true)
         {
-            if (GameMgr.IsTimePaused) yield break;
+            // 在暂停时持续等待，直到游戏恢复
+            while (GameMgr.IsTimePaused)
+            {
+                yield return null;
+            }
 
             yield return new WaitForSeconds(1f / GameMgr.timeScale);
             Tween.UISliderValue(gameTimeSlider, gameTimeSlider.value + 1, 1f / GameMgr.timeScale);
-            if (gameTimeSlider.value >= totalTime)
+            if (gameTimeSlider.value >= totalTime && GameMgr.gameMode != GameMode.Endless)
             {
                 break;
             }
         }
-
         GameMgr.PauseTime();
-
         gameTimeSlider.gameObject.SetActive(false);
-        if (GameMgr.currentLevel < GameMgr.MAX_LEVEL)
+
+        if (GameMgr.gameMode == GameMode.Level)
         {
-            LevelProgressPanel.Instance.ShowVictoryPanel();
+            if (GameMgr.currentLevel < GameMgr.MAX_LEVEL)
+            {
+                LevelProgressPanel.Instance.ShowVictoryPanel();
+            }
+            else
+            {
+                LevelProgressPanel.Instance.ShowEndPanel();
+            }
         }
         else
         {

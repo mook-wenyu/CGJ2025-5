@@ -9,6 +9,10 @@ public class Kettle : MonoBehaviour
 
     public GameObject lidObj;
 
+    private GameObject partsObj;
+
+    private Shake shake;
+
     private SpriteRenderer sr;
 
     private FurnitureData furniture;
@@ -29,6 +33,11 @@ public class Kettle : MonoBehaviour
     void Awake()
     {
         sr = gameObject.GetComponent<SpriteRenderer>();
+        shake = new Shake(this, transform.localPosition);
+        var p = transform.Find("Parts");
+        if (p) partsObj = p.gameObject;
+        if (partsObj) partsObj.SetActive(false);
+
         lid = lidObj.GetComponent<KettleHead>();
         lid.SetOriginalPos(lidObj.transform.position);
         GetComponent<SpriteButton>().onClick.AddListener(OnClicked);
@@ -144,6 +153,8 @@ public class Kettle : MonoBehaviour
             lidObj.SetActive(true);
             lid.StartShaking(status);
 
+            if (partsObj) partsObj.SetActive(true);
+
             Debug.Log("进入状态2：烧水壶黑化");
             return;
         }
@@ -192,9 +203,9 @@ public class Kettle : MonoBehaviour
         SwitchStatus(status);
         currentAnger = furniture.startanger;
         hasStartedDelay = false;
-
         lid.StopShaking();
 
+        if (partsObj) partsObj.SetActive(false);
         Debug.Log("进入状态0：烧水壶恢复正常");
     }
 
@@ -213,6 +224,7 @@ public class Kettle : MonoBehaviour
         stateTickLoop = null;
 
         SwitchToNormal();
+        shake.StopShaking();
 
         isReady = false;
         isFirstWait = false;
@@ -221,5 +233,25 @@ public class Kettle : MonoBehaviour
     void SwitchStatus(FurnitureStatus newStatus)
     {
         sr.sprite = imgs[(int)newStatus];
+
+        // 根据状态控制抖动
+        switch (newStatus)
+        {
+            case FurnitureStatus.Normal:
+                shake.StopShaking();
+                break;
+            case FurnitureStatus.Special:
+                shake.SetSpecialShakeMultiplier();
+                shake.StartShaking();
+                break;
+            case FurnitureStatus.Dark:
+                shake.SetDarkShakeMultiplier();
+                shake.StartShaking();
+                break;
+            case FurnitureStatus.Crazy:
+                // Crazy状态停止抖动
+                shake.StopShaking();
+                break;
+        }
     }
 }

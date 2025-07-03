@@ -12,6 +12,10 @@ public class Firge : MonoBehaviour
     public GameObject sayObj;          // 子物体 say 的引用
     public GameObject dialogueUIObj;
 
+    private GameObject partsObj;
+
+    private Shake shake;
+
     private SpriteRenderer sr;
     private FurnitureStatus status = FurnitureStatus.Normal;
 
@@ -33,6 +37,10 @@ public class Firge : MonoBehaviour
     void Awake()
     {
         sr = gameObject.GetComponent<SpriteRenderer>();
+        shake = new Shake(this, transform.localPosition);
+        var p = transform.Find("Parts");
+        if (p) partsObj = p.gameObject;
+        if (partsObj) partsObj.SetActive(false);
 
         if (dialogueContentList.Count == 0)
         {
@@ -174,6 +182,7 @@ public class Firge : MonoBehaviour
         {
             status = FurnitureStatus.Dark;
             SwitchStatus(status);
+            if (partsObj) partsObj.SetActive(true);
             Debug.Log("进入状态2：冰箱黑化");
             return;
         }
@@ -195,6 +204,11 @@ public class Firge : MonoBehaviour
 
         status = FurnitureStatus.Special;
         SwitchStatus(status);
+        if (sayObj != null && !sayObj.activeSelf)
+        {
+            sayObj.SetActive(true);
+            sayObj.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+        }
         hasStartedDelay = false;
         Debug.Log("进入状态1：冰箱进入特殊状态");
     }
@@ -217,7 +231,7 @@ public class Firge : MonoBehaviour
         if (sayObj != null)
             sayObj.SetActive(false);
         dialogueUI.HideDialogue();
-
+        if (partsObj) partsObj.SetActive(false);
         Debug.Log("进入状态0：冰箱恢复正常");
     }
 
@@ -248,7 +262,7 @@ public class Firge : MonoBehaviour
         stateTickLoop = null;
 
         SwitchToNormal();
-
+        shake.StopShaking();
         isReady = false;
         isFirstWait = false;
     }
@@ -256,5 +270,25 @@ public class Firge : MonoBehaviour
     void SwitchStatus(FurnitureStatus newStatus)
     {
         sr.sprite = imgs[(int)newStatus];
+
+        // 根据状态控制抖动
+        switch (newStatus)
+        {
+            case FurnitureStatus.Normal:
+                shake.StopShaking();
+                break;
+            case FurnitureStatus.Special:
+                shake.SetSpecialShakeMultiplier();
+                shake.StartShaking();
+                break;
+            case FurnitureStatus.Dark:
+                shake.SetDarkShakeMultiplier();
+                shake.StartShaking();
+                break;
+            case FurnitureStatus.Crazy:
+                // Crazy状态停止抖动
+                shake.StopShaking();
+                break;
+        }
     }
 }

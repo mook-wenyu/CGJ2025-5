@@ -6,6 +6,22 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Linq;
 
+public enum GameMode
+{
+    /// <summary>
+    /// 关卡模式（默认）
+    /// </summary>
+    Level,
+    /// <summary>
+    /// 挑战模式
+    /// </summary>
+    Challenge,
+    /// <summary>
+    /// 无尽模式
+    /// </summary>
+    Endless,
+}
+
 public class GameMgr : MonoSingleton<GameMgr>
 {
     public GameObject[] objs;
@@ -30,6 +46,11 @@ public class GameMgr : MonoSingleton<GameMgr>
     /// 最大关卡
     /// </summary>
     public const int MAX_LEVEL = 7;
+
+    /// <summary>
+    /// 游戏模式
+    /// </summary>
+    public static GameMode gameMode = GameMode.Level;
 
     /// <summary>
     /// 游戏时间

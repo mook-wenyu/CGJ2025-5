@@ -9,6 +9,10 @@ public class Clock : MonoBehaviour
     [HideInInspector]
     public Transform clockH, clockM;
 
+    private GameObject partsObj;
+
+    private Shake shake;
+
     private SpriteRenderer sr;
 
     private FurnitureStatus status = FurnitureStatus.Normal;
@@ -44,9 +48,15 @@ public class Clock : MonoBehaviour
 
     void Awake()
     {
+        sr = GetComponent<SpriteRenderer>();
+        shake = new Shake(this, transform.localPosition);
+        var p = transform.Find("Parts");
+        if (p) partsObj = p.gameObject;
+        if (partsObj) partsObj.SetActive(false);
+
         clockH = transform.Find("ClockH");
         clockM = transform.Find("ClockM");
-        sr = GetComponent<SpriteRenderer>();
+        
         sBtn = GetComponent<SpriteButton>();
         sBtn.onClick.AddListener(OnClicked);
     }
@@ -227,7 +237,7 @@ public class Clock : MonoBehaviour
             status = FurnitureStatus.Dark;
             SwitchStatus(status);
             GameMgr.Instance.SetTimeScale(GameMgr.TIME_SCALE_DARK);
-
+            if (partsObj) partsObj.SetActive(true);
             Debug.Log("进入状态2：时钟黑化");
             return;
         }
@@ -270,6 +280,7 @@ public class Clock : MonoBehaviour
         hasStartedDelay = false;
         directionChangeTimer = 0f;
         reverseRotation = false;
+        if (partsObj) partsObj.SetActive(false);
         Debug.Log("进入状态0：时钟恢复正常");
     }
 
@@ -287,6 +298,7 @@ public class Clock : MonoBehaviour
         stateTickLoop = null;
 
         SwitchToNormal();
+        shake.StopShaking();
         isReady = false;
         isFirstWait = false;
     }
@@ -298,6 +310,26 @@ public class Clock : MonoBehaviour
     void SwitchStatus(FurnitureStatus newStatus)
     {
         sr.sprite = imgs[(int)newStatus];
+
+        // 根据状态控制抖动
+        switch (newStatus)
+        {
+            case FurnitureStatus.Normal:
+                shake.StopShaking();
+                break;
+            case FurnitureStatus.Special:
+                shake.SetSpecialShakeMultiplier();
+                shake.StartShaking();
+                break;
+            case FurnitureStatus.Dark:
+                shake.SetDarkShakeMultiplier();
+                shake.StartShaking();
+                break;
+            case FurnitureStatus.Crazy:
+                // Crazy状态停止抖动
+                shake.StopShaking();
+                break;
+        }
     }
 
 }

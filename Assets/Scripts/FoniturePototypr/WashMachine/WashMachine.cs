@@ -12,6 +12,10 @@ public class WashMachine : MonoBehaviour
     public WMPlant plantObj;
     public GameObject face;
 
+    private GameObject partsObj;
+
+    private Shake shake;
+
     private SpriteRenderer fsr;
 
     private SpriteRenderer sr;
@@ -34,6 +38,11 @@ public class WashMachine : MonoBehaviour
     {
         sr = gameObject.GetComponent<SpriteRenderer>();
         fsr = face.GetComponent<SpriteRenderer>();
+        shake = new Shake(this, transform.localPosition);
+        var p = transform.Find("Parts");
+        if (p) partsObj = p.gameObject;
+        if (partsObj) partsObj.SetActive(false);
+
         GetComponent<SpriteButton>().onClick.AddListener(OnClicked);
     }
 
@@ -159,11 +168,11 @@ public class WashMachine : MonoBehaviour
             face.SetActive(true);
             status = FurnitureStatus.Dark;
             SwitchStatus(status);
+            if (partsObj) partsObj.SetActive(true);
             Debug.Log("进入状态2：滚筒洗衣机黑化");
             return;
         }
     }
-
 
     private void OnClicked()
     {
@@ -207,7 +216,7 @@ public class WashMachine : MonoBehaviour
 
         currentAnger = furniture.startanger;
         hasStartedDelay = false;
-
+        if (partsObj) partsObj.SetActive(false);
         Debug.Log("进入状态0：滚筒洗衣机恢复正常");
     }
 
@@ -226,6 +235,7 @@ public class WashMachine : MonoBehaviour
         stateTickLoop = null;
 
         SwitchToNormal();
+        shake.StopShaking();
         isReady = false;
         isFirstWait = false;
     }
@@ -233,5 +243,25 @@ public class WashMachine : MonoBehaviour
     void SwitchStatus(FurnitureStatus newStatus)
     {
         sr.sprite = imgs[(int)newStatus];
+
+        // 根据状态控制抖动
+        switch (newStatus)
+        {
+            case FurnitureStatus.Normal:
+                shake.StopShaking();
+                break;
+            case FurnitureStatus.Special:
+                shake.SetSpecialShakeMultiplier();
+                shake.StartShaking();
+                break;
+            case FurnitureStatus.Dark:
+                shake.SetDarkShakeMultiplier();
+                shake.StartShaking();
+                break;
+            case FurnitureStatus.Crazy:
+                // Crazy状态停止抖动
+                shake.StopShaking();
+                break;
+        }
     }
 }

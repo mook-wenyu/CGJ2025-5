@@ -8,6 +8,8 @@ public class Robot : MonoBehaviour
     [Header("图片")]
     public Sprite[] imgs;
 
+    private GameObject partsObj;
+
     private SpriteRenderer sr;
 
     private FurnitureStatus status = FurnitureStatus.Normal;
@@ -24,16 +26,20 @@ public class Robot : MonoBehaviour
     public float speed = 10f;
 
     private Coroutine launchCoroutine = null;
+    private Coroutine sweepLoop = null;
     private Coroutine stateTickLoop = null;
 
-    private bool isFirstWait = false;
-    private Coroutine moveCoroutine;
     private HidePoint orderCtrl = null;
     private int lastIndex = -1;
 
     void Awake()
     {
         sr = gameObject.GetComponent<SpriteRenderer>();
+
+        var p = transform.Find("Parts");
+        if (p) partsObj = p.gameObject;
+        if (partsObj) partsObj.SetActive(false);
+
         GetComponent<SpriteButton>().onClick.AddListener(OnClicked);
     }
 
@@ -53,6 +59,7 @@ public class Robot : MonoBehaviour
         if (launchCoroutine != null)
         {
             StopCoroutine(launchCoroutine);
+            launchCoroutine = null;
         }
         launchCoroutine = StartCoroutine(LaunchCoroutine());
     }
@@ -61,7 +68,10 @@ public class Robot : MonoBehaviour
     {
         float waitTime = furniture.waitTime / GameMgr.timeScale;
         float elapsedTime = 0f;
-        
+
+        // 扫地机器人
+        sweepLoop = StartCoroutine(SweepLoop());
+
         while (elapsedTime < waitTime)
         {
             // 在暂停时持续等待，直到游戏恢复
@@ -71,71 +81,122 @@ public class Robot : MonoBehaviour
             }
             yield return null;
         }
-        
-        isFirstWait = true;
-        StartCoroutine(IdleAndMoveLoop());
+
+        if (sweepLoop != null)
+        {
+            StopCoroutine(sweepLoop);
+            sweepLoop = null;
+            yield return null;
+        }
+
+        StartCoroutine(SwitchToSpecial(0));
     }
 
-    IEnumerator IdleAndMoveLoop()
+    IEnumerator SweepLoop()
     {
-        // 记录上一次的索引
-
         while (true)
         {
-            if (status != FurnitureStatus.Normal) yield break;
-
-            float delay = Random.Range(furniture.minInterval, furniture.maxInterval + 1);
-            if (isFirstWait)
+            if (GameMgr.IsTimePaused)
             {
-                delay = 0f;
-                isFirstWait = false;
-            }
-            
-            float elapsedTime = 0f;
-            while (elapsedTime < delay / GameMgr.timeScale)
-            {
-                // 在暂停时持续等待，直到游戏恢复
-                if (!GameMgr.IsTimePaused)
-                {
-                    elapsedTime += Time.deltaTime;
-                }
                 yield return null;
             }
 
-            if (positions.Length == 0) yield break;
-
-            int newIndex;
-            do
+            // 在Normal状态下随机在positions点之间移动
+            if (status == FurnitureStatus.Normal && positions.Length > 0)
             {
-                newIndex = Random.Range(0, positions.Length);
-            } while (positions.Length > 1 && newIndex == lastIndex); // 避免和上次一样
+                // 随机选择一个位置点
+                int newIndex;
+                do
+                {
+                    newIndex = Random.Range(0, positions.Length);
+                } while (positions.Length > 1 && newIndex == lastIndex); // 避免和上次一样
 
-            lastIndex = newIndex;
-            Transform target = positions[newIndex];
-            moveCoroutine = StartCoroutine(MoveToTarget(target));
-            yield break;
+                lastIndex = newIndex;
+                Transform target = positions[newIndex];
+
+                // 移动到目标位置
+                while (Mathf.Abs(transform.position.x - target.position.x) > 0.05f)
+                {
+                    if (GameMgr.IsTimePaused)
+                    {
+                        yield return null;
+                        continue;
+                    }
+
+                    if (status != FurnitureStatus.Normal)
+                    {
+                        break; // 如果状态改变，退出移动循环
+                    }
+
+                    // 只移动X轴
+                    float newX = Mathf.MoveTowards(
+                        transform.position.x,
+                        target.position.x,
+                        speed * GameMgr.timeScale * Time.deltaTime
+                    );
+                    transform.position = new Vector3(newX, transform.position.y, transform.position.z);
+                    yield return null;
+                }
+
+                // 在每个位置短暂停留
+                if (status == FurnitureStatus.Normal)
+                {
+                    float pauseTime = 1.0f / GameMgr.timeScale;
+                    float elapsedTime = 0f;
+                    while (elapsedTime < pauseTime && status == FurnitureStatus.Normal)
+                    {
+                        if (!GameMgr.IsTimePaused)
+                        {
+                            elapsedTime += Time.deltaTime;
+                        }
+                        yield return null;
+                    }
+                }
+            }
+            else
+            {
+                yield return null;
+            }
         }
     }
 
-
-    IEnumerator MoveToTarget(Transform target)
+    /// <summary>
+    /// 在目标位置隐藏
+    /// </summary>
+    /// <returns>隐藏协程</returns>
+    private IEnumerator HideAtTarget()
     {
-        while (Vector3.Distance(transform.position, target.position) > 0.05f)
+        if (positions.Length == 0) yield break;
+
+        int newIndex;
+        do
+        {
+            newIndex = Random.Range(0, positions.Length);
+        } while (positions.Length > 1 && newIndex == lastIndex); // 避免和上次一样
+
+        lastIndex = newIndex;
+        Transform target = positions[newIndex];
+
+        // 移动到目标位置
+        while (Mathf.Abs(transform.position.x - target.position.x) > 0.05f)
         {
             // 在暂停时持续等待，直到游戏恢复
             while (GameMgr.IsTimePaused)
             {
                 yield return null;
             }
-            
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                target.position,
+
+            // 只移动X轴
+            float newX = Mathf.MoveTowards(
+                transform.position.x,
+                target.position.x,
                 speed * GameMgr.timeScale * Time.deltaTime
             );
+            transform.position = new Vector3(newX, transform.position.y, transform.position.z);
+            Debug.Log("隐藏 当前X:" + transform.position.x + " 目标X:" + target.position.x);
             yield return null;
         }
-        yield return new WaitForSeconds(0.5f / GameMgr.timeScale);
+
         Debug.Log("已到达目标点，进入状态1");
         orderCtrl = target.GetComponent<HidePoint>();
         if (orderCtrl != null)
@@ -147,6 +208,10 @@ public class Robot : MonoBehaviour
         status = FurnitureStatus.Special;
         SwitchStatus(status);
 
+        if (stateTickLoop != null)
+        {
+            StopCoroutine(stateTickLoop);
+        }
         stateTickLoop = StartCoroutine(StateTickLoop());
     }
 
@@ -198,7 +263,7 @@ public class Robot : MonoBehaviour
         {
             status = FurnitureStatus.Dark;
             SwitchStatus(status);
-
+            if (partsObj) partsObj.SetActive(true);
             Debug.Log("进入状态2：扫地机器人黑化");
             return;
         }
@@ -211,30 +276,61 @@ public class Robot : MonoBehaviour
         if (status == FurnitureStatus.Special || status == FurnitureStatus.Dark)
         {
             SwitchToNormal();
+            sweepLoop = StartCoroutine(SweepLoop());
+
+            float delay = Random.Range(furniture.minInterval, furniture.maxInterval + 1);
+            StartCoroutine(SwitchToSpecial(delay));
         }
+    }
+
+    IEnumerator SwitchToSpecial(float delay)
+    {
+        float waitTime = delay / GameMgr.timeScale;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < waitTime)
+        {
+            // 在暂停时持续等待，直到游戏恢复
+            if (!GameMgr.IsTimePaused)
+            {
+                elapsedTime += Time.deltaTime;
+            }
+            yield return null;
+        }
+
+        if (sweepLoop != null)
+        {
+            StopCoroutine(sweepLoop);
+            sweepLoop = null;
+            yield return null;
+        }
+        StartCoroutine(HideAtTarget());
     }
 
     void SwitchToNormal()
     {
+        if (sweepLoop != null)
+        {
+            StopCoroutine(sweepLoop);
+            sweepLoop = null;
+        }
+
         if (stateTickLoop != null)
         {
             StopCoroutine(stateTickLoop);
+            stateTickLoop = null;
         }
-        stateTickLoop = null;
 
         status = FurnitureStatus.Normal;
         SwitchStatus(status);
         currentAnger = furniture.startanger;
 
+        if (partsObj) partsObj.SetActive(false);
         if (orderCtrl != null)
         {
             orderCtrl.SetSonOrderToTop();
             Debug.Log("调用 SetSonOrderToBottom 成功");
         }
-        if (moveCoroutine != null)
-            StopCoroutine(moveCoroutine);
-
-        StartCoroutine(IdleAndMoveLoop());
 
         Debug.Log("进入状态0：扫地机器人恢复正常");
     }
@@ -244,17 +340,23 @@ public class Robot : MonoBehaviour
         if (launchCoroutine != null)
         {
             StopCoroutine(launchCoroutine);
+            launchCoroutine = null;
         }
-        launchCoroutine = null;
 
         if (stateTickLoop != null)
         {
             StopCoroutine(stateTickLoop);
+            stateTickLoop = null;
         }
-        stateTickLoop = null;
 
         transform.position = new Vector2(startPoint.position.x, transform.position.y);
         SwitchToNormal();
+
+        if (sweepLoop != null)
+        {
+            StopCoroutine(sweepLoop);
+            sweepLoop = null;
+        }
     }
 
     void SwitchStatus(FurnitureStatus newStatus)
