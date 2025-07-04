@@ -42,4 +42,8 @@ public class LevelConfigConfig : BaseConfig
     /// 失控状态阈值
     /// </summary>
     public float[] stage_3_threshold;
+    /// <summary>
+    /// 介绍台词
+    /// </summary>
+    public string introduce;
 }

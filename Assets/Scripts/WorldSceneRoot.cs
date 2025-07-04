@@ -58,7 +58,7 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
     // Update is called once per frame
     void Update()
     {
-        if (GameMgr.isFailed || GameMgr.isVictory) return;
+        if (GameMgr.currentState != GameState.Playing) return;
 
         // 同时支持方向键、手机屏幕拖动和鼠标拖动
 

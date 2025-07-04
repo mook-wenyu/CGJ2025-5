@@ -6,6 +6,9 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Linq;
 
+/// <summary>
+/// 游戏模式
+/// </summary>
 public enum GameMode
 {
     /// <summary>
@@ -22,6 +25,26 @@ public enum GameMode
     Endless,
 }
 
+public enum GameState
+{
+    /// <summary>
+    /// 游戏进行中
+    /// </summary>
+    Playing,
+    /// <summary>
+    /// 游戏胜利
+    /// </summary>
+    Victory,
+    /// <summary>
+    /// 游戏失败
+    /// </summary>
+    Failed,
+    /// <summary>
+    /// 游戏结束
+    /// </summary>
+    End,
+}
+
 public class GameMgr : MonoSingleton<GameMgr>
 {
     public GameObject[] objs;
@@ -35,13 +58,9 @@ public class GameMgr : MonoSingleton<GameMgr>
     /// </summary>
     public static int currentLevel = 1;
     /// <summary>
-    /// 是否失败
+    /// 当前游戏状态
     /// </summary>
-    public static bool isFailed = false;
-    /// <summary>
-    /// 是否胜利
-    /// </summary>
-    public static bool isVictory = false;
+    public static GameState currentState = GameState.Playing;
     /// <summary>
     /// 最大关卡
     /// </summary>

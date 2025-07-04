@@ -10,4 +10,8 @@ public class HomeAliveConfig : BaseConfig
     /// 位置
     /// </summary>
     public string pos;
+    /// <summary>
+    /// 失败台词
+    /// </summary>
+    public string failure_lines;
 }
