@@ -45,6 +45,11 @@ public class SpriteButton : MonoBehaviour,
         _disabledColor = new Color(_normalColor.r * 0.5f, _normalColor.g * 0.5f, _normalColor.b * 0.5f, _normalColor.a * 0.5f);
     }
 
+    public void SetSpriteRenderer(SpriteRenderer spriteRenderer)
+    {
+        _spriteRenderer = spriteRenderer;
+    }
+
     public void SetAlpha(float alpha)
     {
         _spriteRenderer.color = new Color(_spriteRenderer.color.r, _spriteRenderer.color.g, _spriteRenderer.color.b, alpha);

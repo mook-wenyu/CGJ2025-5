@@ -192,7 +192,6 @@ public class Robot : MonoBehaviour
                 speed * GameMgr.timeScale * Time.deltaTime
             );
             transform.position = new Vector3(newX, transform.position.y, transform.position.z);
-            Debug.Log("隐藏 当前X:" + transform.position.x + " 目标X:" + target.position.x);
             yield return null;
         }
 

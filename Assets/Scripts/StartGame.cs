@@ -35,7 +35,7 @@ public class StartGame : MonoBehaviour
     {
         GameMgr.currentLevel = 1;
 
-        AudioMgr.Instance.PlayMusic("bgm1");
+        AudioMgr.Instance.PlayMusic("bgm");
     }
 
     public void OnPlayGame()

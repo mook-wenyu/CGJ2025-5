@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4329504195173699086}
   - component: {fileID: 1737665029674722873}
-  - component: {fileID: 2601688473111226968}
   - component: {fileID: 5450837999125098122}
+  - component: {fileID: 2601688473111226968}
   m_Layer: 0
   m_Name: lid
   m_TagString: Untagged
@@ -86,6 +86,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &5450837999125098122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4721428599886124069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a81d6211ec6d5943bd98c08c49e959a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  transitionType: 0
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!60 &2601688473111226968
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -120,8 +136,8 @@ PolygonCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
-    border: {x: 0, y: 0.42, z: 0, w: 0.32}
-    pivot: {x: 0.5019763, y: 0.41121495}
+    border: {x: 0, y: 0.42999998, z: 0, w: 0.32}
+    pivot: {x: 0.5, y: 0.41121495}
     oldSize: {x: 2.53, y: 1.07}
     newSize: {x: 2.53, y: 1.07}
     adaptiveTilingThreshold: 0.5
@@ -139,22 +155,6 @@ PolygonCollider2D:
       - {x: 1.0899999, y: -0.03}
       - {x: -1.0200001, y: -0.03}
   m_UseDelaunayMesh: 0
---- !u!114 &5450837999125098122
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4721428599886124069}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a81d6211ec6d5943bd98c08c49e959a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  transitionType: 0
-  onClick:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &6751911503714755822
 GameObject:
   m_ObjectHideFlags: 0
@@ -277,11 +277,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a81bf69beb5411c45a83c841abd24f88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imgs:
-  - {fileID: 21300000, guid: e7b354e94f208cf4b85365dd9dbcc540, type: 3}
-  - {fileID: 21300000, guid: 8ba2d7b57134c6b4b9e6203db7293026, type: 3}
-  - {fileID: 21300000, guid: 8e3692708b07c0e48a7771ae133bcdd3, type: 3}
-  - {fileID: 21300000, guid: 76fc627ec7c035c4c98433ea1736dff2, type: 3}
   lid: {fileID: 4721428599886124069}
   lidOpen: {fileID: 21300000, guid: 78505b737f81d184eabafedf60494f83, type: 3}
   lidClose: {fileID: 21300000, guid: f4138215e77b3d649ba49657e2faad8a, type: 3}

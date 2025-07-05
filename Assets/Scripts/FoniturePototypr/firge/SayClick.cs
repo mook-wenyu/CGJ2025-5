@@ -22,12 +22,14 @@ public class SayClick : MonoBehaviour
 
         if (dialogueUI != null)
         {
+            AudioMgr.Instance.PlaySound("电冰箱说话");
             currentIndex = Random.Range(0, firgeScript.dialogueContentList.Count);
 
             dialogueUI.selection1.gameObject.SetActive(true);
             dialogueUI.selection1.GetComponent<Button>().onClick.RemoveAllListeners();
             dialogueUI.selection1.GetComponent<Button>().onClick.AddListener(() =>
             {
+                AudioMgr.Instance.PlaySound("电冰箱说话");
                 dialogueUI.Say(firgeScript.dialogueContentList[currentIndex].c2);
                 dialogueUI.selection1.gameObject.SetActive(false);
                 dialogueUI.selection2.gameObject.SetActive(false);

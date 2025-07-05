@@ -12,8 +12,9 @@ public class Bin : Furniture
     protected override void StartFurniture()
     {
         base.StartFurniture();
-        lidBtn = transform.Find("lid").GetComponent<SpriteButton>();
         lid.SetActive(true);
+        lidBtn = lid.GetComponent<SpriteButton>();
+        lidBtn.SetSpriteRenderer(lid.GetComponent<SpriteRenderer>());
         lidBtn.SetSprite(lidClose);
         lidBtn.SetAlpha(1f);
     }
