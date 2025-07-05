@@ -1,6 +1,4 @@
-﻿using System;
-
-public class HomeAliveConfig : BaseConfig
+﻿public class HomeAliveConfig : BaseConfig
 {
     /// <summary>
     /// 名称

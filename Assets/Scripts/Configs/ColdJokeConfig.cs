@@ -1,6 +1,4 @@
-﻿using System;
-
-public class ColdJokeConfig : BaseConfig
+﻿public class ColdJokeConfig : BaseConfig
 {
     /// <summary>
     /// 唯一标识

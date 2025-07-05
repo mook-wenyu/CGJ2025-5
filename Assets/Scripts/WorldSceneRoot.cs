@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -170,7 +169,7 @@ public class WorldSceneRoot : MonoSingleton<WorldSceneRoot>
         gameTimeSlider.gameObject.SetActive(true);
         gameTimeSlider.value = 0;
 
-        var levelData = CSVMgr.Get<LevelConfigConfig>(GameMgr.currentLevel.ToString());
+        var levelData = ConfigMgr.Get<LevelConfigConfig>(GameMgr.currentLevel.ToString());
         levelTime = levelData.time;
         gameTimeSlider.maxValue = levelTime;
 

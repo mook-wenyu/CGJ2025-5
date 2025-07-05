@@ -81,7 +81,7 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
             levelProgressText.text = GetLevelProgressText(GameMgr.currentLevel + 1);
 
             victoryImg.sprite = victorySprites[GameMgr.currentLevel];
-            victoryText.text = CSVMgr.Get<LevelConfigConfig>((GameMgr.currentLevel + 1).ToString()).introduce;
+            victoryText.text = ConfigMgr.Get<LevelConfigConfig>((GameMgr.currentLevel + 1).ToString()).introduce;
         }
         Tween.LocalPositionX(victoryPanel.transform, 0, 0.5f, ease: Ease.InOutCirc);
         Tween.LocalPositionX(fgPanel.transform, 0, 0.5f, ease: Ease.InOutCirc);
@@ -134,7 +134,7 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
 
         failPanel.SetActive(true);
         failImg.sprite = homeAliveSprites[name];
-        failText.text = CSVMgr.Get<HomeAliveConfig>(name).failure_lines;
+        failText.text = ConfigMgr.Get<HomeAliveConfig>(name).failure_lines;
     }
 
     void OnTryAgainBtn()

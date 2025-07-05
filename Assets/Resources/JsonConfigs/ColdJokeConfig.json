@@ -1,0 +1,183 @@
+﻿{
+  "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[BaseConfig, Assembly-CSharp]], mscorlib",
+  "1001": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "可口可乐放着不喝会怎么样？",
+    "c2": "会变成摆饰可乐",
+    "id": "1001"
+  },
+  "1002": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "公鹿跑起来会变成什么？",
+    "c2": "高速公路",
+    "id": "1002"
+  },
+  "1003": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "人死后会变成星星，商鞅死后会变成什么？",
+    "c2": "五星上将",
+    "id": "1003"
+  },
+  "1004": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "世界上最内卷的地方在哪里？",
+    "c2": "木乃伊博物馆，因为有的是人干",
+    "id": "1004"
+  },
+  "1005": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "鸽子怎么说话？",
+    "c2": "“在路上了”",
+    "id": "1005"
+  },
+  "1006": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "什么动物喜欢贴在墙上？",
+    "c2": "海豹",
+    "id": "1006"
+  },
+  "1007": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "超人为什么要穿紧身衣",
+    "c2": "因为救人要紧",
+    "id": "1007"
+  },
+  "1008": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "猫会喵喵喵，狗会汪汪汪，鸭会嘎嘎嘎，鸡会什么",
+    "c2": "鸡会留给又准备的人",
+    "id": "1008"
+  },
+  "1009": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "旺旺雪饼觉得热了会变成什么？",
+    "c2": "旺旺掀被",
+    "id": "1009"
+  },
+  "1010": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "愚公移山会唱什么歌？",
+    "c2": "小星星，移山移山亮晶晶",
+    "id": "1010"
+  },
+  "1011": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "一朵花为什么好笑？",
+    "c2": "因为它有梗",
+    "id": "1011"
+  },
+  "1012": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "淄博有烧烤，云南有泼水节，深圳有什么？",
+    "c2": "深圳不怕影子斜",
+    "id": "1012"
+  },
+  "1013": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "打电话叫彩虹来，为什么只到了五种颜色？",
+    "c2": "因为青黄不接",
+    "id": "1013"
+  },
+  "1014": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "牛排煎得太熟怎么办？",
+    "c2": "放点起司就好了，起司回生",
+    "id": "1014"
+  },
+  "1015": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "一个0去一个全是1的地方，第一句话会说什么？",
+    "c2": "Hello everyone",
+    "id": "1015"
+  },
+  "1016": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "恐怖分子楼下住着谁？",
+    "c2": "恐怖分母",
+    "id": "1016"
+  },
+  "1017": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "什么东西吃进嘴里凉凉的，还咯牙？",
+    "c2": "空调",
+    "id": "1017"
+  },
+  "1018": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "投资和投机有什么区别？",
+    "c2": "一个是普通话，一个是广东话",
+    "id": "1018"
+  },
+  "1019": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "什么东西最提神？",
+    "c2": "十字架",
+    "id": "1019"
+  },
+  "1020": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "女娲用什么补天？",
+    "c2": "强扭的瓜",
+    "id": "1020"
+  },
+  "1021": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "为什么阿姨不流汗",
+    "c2": "因为阿姨怕留下遗憾",
+    "id": "1021"
+  },
+  "1022": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "什么东西最不寂寞？",
+    "c2": "游标卡尺，游标卡尺不估读",
+    "id": "1022"
+  },
+  "1023": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "积德行善的反义词是什么？",
+    "c2": "柯南行凶",
+    "id": "1023"
+  },
+  "1024": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "M和N吵架，最后是谁道歉？",
+    "c2": "M，M sorry",
+    "id": "1024"
+  },
+  "1025": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "晴天为什么让人心情好？",
+    "c2": "因为人在无雨的时候会笑",
+    "id": "1025"
+  },
+  "1026": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "花生到日本会变成什么？",
+    "c2": "花生酱",
+    "id": "1026"
+  },
+  "1027": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "什么东西和灯泡一样，但是不会亮？",
+    "c2": "坏灯泡",
+    "id": "1027"
+  },
+  "1028": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "可乐和咖啡谁更长寿？",
+    "c2": "咖啡，因为可乐会没气",
+    "id": "1028"
+  },
+  "1029": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "米的妈妈是谁？",
+    "c2": "是花，因为花生米",
+    "id": "1029"
+  },
+  "1030": {
+    "$type": "ColdJokeConfig, Assembly-CSharp",
+    "c1": "湖南的鬼是什么？",
+    "c2": "湘飘飘",
+    "id": "1030"
+  }
+}

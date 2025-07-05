@@ -1,6 +1,4 @@
-﻿using System;
-
-public class LevelConfigConfig : BaseConfig
+﻿public class LevelConfigConfig : BaseConfig
 {
     /// <summary>
     /// 名称

@@ -44,7 +44,7 @@ public class Firge : MonoBehaviour
 
         if (dialogueContentList.Count == 0)
         {
-            CSVMgr.GetAll<ColdJokeConfig>().ForEach(config =>
+            ConfigMgr.GetAll<ColdJokeConfig>().ForEach(config =>
             {
                 dialogueContentList.Add(config);
             });

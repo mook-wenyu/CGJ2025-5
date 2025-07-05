@@ -25,7 +25,7 @@ public class StartGame : MonoBehaviour
         zhiZuoRenBtn.onClick.AddListener(OnZhiZuoRen);
         exitGameBtn.onClick.AddListener(OnExitGame);
 
-        CSVMgr.Init();
+        ConfigMgr.Init();
         AudioMgr.Instance.Init();
 
         maskBg.SetActive(false);
