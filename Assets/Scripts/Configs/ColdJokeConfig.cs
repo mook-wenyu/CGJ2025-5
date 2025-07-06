@@ -1,11 +1,15 @@
 ﻿public class ColdJokeConfig : BaseConfig
 {
     /// <summary>
-    /// 唯一标识
+    /// 内容
     /// </summary>
-    public string c1;
+    public string content;
     /// <summary>
-    /// 唯一标识
+    /// 选项1
     /// </summary>
-    public string c2;
+    public string option_yes;
+    /// <summary>
+    /// 选项2
+    /// </summary>
+    public string option_no;
 }

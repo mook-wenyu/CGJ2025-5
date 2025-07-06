@@ -26,25 +26,26 @@ public class SayClick : MonoBehaviour
             currentIndex = Random.Range(0, firgeScript.dialogueContentList.Count);
 
             dialogueUI.selection1.gameObject.SetActive(true);
+            dialogueUI.selection1.GetComponentInChildren<TextMeshProUGUI>().text = firgeScript.dialogueContentList[currentIndex].option_yes;
             dialogueUI.selection1.GetComponent<Button>().onClick.RemoveAllListeners();
             dialogueUI.selection1.GetComponent<Button>().onClick.AddListener(() =>
             {
                 AudioMgr.Instance.PlaySound("电冰箱说话");
-                dialogueUI.Say(firgeScript.dialogueContentList[currentIndex].c2);
                 dialogueUI.selection1.gameObject.SetActive(false);
                 dialogueUI.selection2.gameObject.SetActive(false);
-                StartCoroutine(WaitForDialogue());
+                firgeScript.SwitchToNormal();
             });
 
 
             dialogueUI.selection2.gameObject.SetActive(true);
+            dialogueUI.selection2.GetComponentInChildren<TextMeshProUGUI>().text = firgeScript.dialogueContentList[currentIndex].option_no;
             if (dialogueUI.selection2.GetComponent<Button>().onClick.GetPersistentEventCount() == 0)
             {
                 dialogueUI.selection2.GetComponent<Button>().onClick.AddListener(firgeScript.ClickClose);
             }
 
             dialogueUI.gameObject.SetActive(true);     // 显示对话框
-            dialogueUI.Say(firgeScript.dialogueContentList[currentIndex].c1);
+            dialogueUI.Say(firgeScript.dialogueContentList[currentIndex].content);
             // 50% 概率交换两个按钮的位置
             if (Random.value < 0.5f && dialogueUI.selection1 != null && dialogueUI.selection2 != null)
             {
@@ -63,10 +64,4 @@ public class SayClick : MonoBehaviour
         GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0);
     }
 
-    IEnumerator WaitForDialogue()
-    {
-        yield return new WaitForSeconds(1.5f / GameMgr.timeScale);
-
-        firgeScript.SwitchToNormal();
-    }
 }
