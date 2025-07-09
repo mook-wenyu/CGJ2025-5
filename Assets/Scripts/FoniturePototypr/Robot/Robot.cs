@@ -303,6 +303,8 @@ public class Robot : MonoBehaviour
             yield return null;
         }
         StartCoroutine(HideAtTarget());
+
+        AliveRedPiont.Instance.AddRedPoint(true);
     }
 
     void SwitchToNormal()
@@ -329,6 +331,8 @@ public class Robot : MonoBehaviour
             orderCtrl.SetSonOrderToTop();
             Debug.Log("调用 SetSonOrderToBottom 成功");
         }
+
+        AliveRedPiont.Instance.RemoveRedPoint(true);
 
         Debug.Log("进入状态0：扫地机器人恢复正常");
     }

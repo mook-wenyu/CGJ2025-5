@@ -210,6 +210,8 @@ public class Firge : MonoBehaviour
             sayObj.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
         }
         hasStartedDelay = false;
+
+        AliveRedPiont.Instance.AddRedPoint(false);
         Debug.Log("进入状态1：冰箱进入特殊状态");
     }
 
@@ -232,6 +234,8 @@ public class Firge : MonoBehaviour
             sayObj.SetActive(false);
         dialogueUI.HideDialogue();
         if (partsObj) partsObj.SetActive(false);
+
+        AliveRedPiont.Instance.RemoveRedPoint(false);
         Debug.Log("进入状态0：冰箱恢复正常");
     }
 

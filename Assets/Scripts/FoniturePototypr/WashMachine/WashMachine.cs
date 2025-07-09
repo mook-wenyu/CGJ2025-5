@@ -203,6 +203,9 @@ public class WashMachine : MonoBehaviour
         SwitchStatus(status);
         fsr.sprite = faceimg[0];
         face.SetActive(true);
+
+        AliveRedPiont.Instance.AddRedPoint(false);
+
         Debug.Log("进入状态1：滚筒洗衣机进入特殊状态");
     }
 
@@ -217,6 +220,9 @@ public class WashMachine : MonoBehaviour
         currentAnger = furniture.startanger;
         hasStartedDelay = false;
         if (partsObj) partsObj.SetActive(false);
+
+        AliveRedPiont.Instance.RemoveRedPoint(false);
+
         Debug.Log("进入状态0：滚筒洗衣机恢复正常");
     }
 

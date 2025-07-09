@@ -56,6 +56,8 @@ public class Airconditioning : MonoBehaviour
                 status = FurnitureStatus.Normal;
                 SwitchStatus(status);
                 smoke.SetActive(false);
+                
+                AliveRedPiont.Instance.RemoveRedPoint(true);
                 Debug.Log("无蟑螂存在 → 状态0");
             }
             return;
@@ -68,6 +70,8 @@ public class Airconditioning : MonoBehaviour
             SwitchStatus(status);
             smoke.SetActive(false);
             if (partsObj) partsObj.SetActive(false);
+
+            AliveRedPiont.Instance.AddRedPoint(true);
             Debug.Log("蟑螂出生 → 状态1");
         }
 

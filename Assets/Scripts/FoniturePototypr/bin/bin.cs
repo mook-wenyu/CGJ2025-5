@@ -55,6 +55,8 @@ public class Bin : Furniture
         lidBtn.SetSprite(lidOpen);
         lidBtn.SetAlpha(0.01f);
         lidBtn.onClick.AddListener(OnClicked);
+
+        AliveRedPiont.Instance.AddRedPoint(true);
         Debug.Log("进入状态1：垃圾桶进入特殊状态");
     }
 
@@ -65,6 +67,8 @@ public class Bin : Furniture
         lidBtn.SetSprite(lidClose);
         lidBtn.SetAlpha(1f);
         lidBtn.onClick.RemoveAllListeners();
+
+        AliveRedPiont.Instance.RemoveRedPoint(true);
         Debug.Log("进入状态0：垃圾桶恢复正常");
     }
 

@@ -2,182 +2,212 @@
   "$type": "System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[BaseConfig, Assembly-CSharp]], mscorlib",
   "1001": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "可口可乐放着不喝会怎么样？",
+    "option_yes": "会变成摆饰可乐",
+    "option_no": "会没气",
     "id": "1001"
   },
   "1002": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "公鹿跑起来会变成什么？",
+    "option_yes": "高速公路",
+    "option_no": "超级驼鹿",
     "id": "1002"
   },
   "1003": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "人死后会变成星星，商鞅死后会变成什么？",
+    "option_yes": "五星上将",
+    "option_no": "商鞅星",
     "id": "1003"
   },
   "1004": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "世界上最内卷的地方在哪里？",
+    "option_yes": "木乃伊博物馆，因为有的是人干",
+    "option_no": "深圳",
     "id": "1004"
   },
   "1005": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "鸽子怎么说话？",
+    "option_yes": "“在路上了”",
+    "option_no": "咕咕咕",
     "id": "1005"
   },
   "1006": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "什么动物喜欢贴在墙上？",
+    "option_yes": "海豹",
+    "option_no": "壁虎",
     "id": "1006"
   },
   "1007": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "超人为什么要穿紧身衣",
+    "option_yes": "因为救人要紧",
+    "option_no": "因为要展示肌肉",
     "id": "1007"
   },
   "1008": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "猫会喵喵喵，狗会汪汪汪，鸭会嘎嘎嘎，鸡会什么",
+    "option_yes": "鸡会留给又准备的人",
+    "option_no": "咯咯哒",
     "id": "1008"
   },
   "1009": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "旺旺雪饼觉得热了会变成什么？",
+    "option_yes": "旺旺掀被",
+    "option_no": "旺旺饼干",
     "id": "1009"
   },
   "1010": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "愚公移山会唱什么歌？",
+    "option_yes": "小星星，移山移山亮晶晶",
+    "option_no": "云南山歌",
     "id": "1010"
   },
   "1011": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "一朵花为什么好笑？",
+    "option_yes": "因为它有梗",
+    "option_no": "因为它是向日葵",
     "id": "1011"
   },
   "1012": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "淄博有烧烤，云南有泼水节，深圳有什么？",
+    "option_yes": "深圳不怕影子斜",
+    "option_no": "猪脚饭",
     "id": "1012"
   },
   "1013": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "打电话叫彩虹来，为什么只到了五种颜色？",
+    "option_yes": "因为青黄不接",
+    "option_no": "有两个没空",
     "id": "1013"
   },
   "1014": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "牛排煎得太熟怎么办？",
+    "option_yes": "放点起司就好了，起司回生",
+    "option_no": "将就吃吧",
     "id": "1014"
   },
   "1015": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "一个0去一个全是1的地方，第一句话会说什么？",
+    "option_yes": "Hello everyone",
+    "option_no": "初次见面多多关照",
     "id": "1015"
   },
   "1016": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "恐怖分子楼下住着谁？",
+    "option_yes": "恐怖分母",
+    "option_no": "FBI",
     "id": "1016"
   },
   "1017": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "什么东西吃进嘴里凉凉的，还咯牙？",
+    "option_yes": "空调",
+    "option_no": "冰棍",
     "id": "1017"
   },
   "1018": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "投资和投机有什么区别？",
+    "option_yes": "一个是普通话，一个是广东话",
+    "option_no": "一个不犯法，一个犯法",
     "id": "1018"
   },
   "1019": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "什么东西最提神？",
+    "option_yes": "十字架",
+    "option_no": "咖啡",
     "id": "1019"
   },
   "1020": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "女娲用什么补天？",
+    "option_yes": "强扭的瓜",
+    "option_no": "五彩石",
     "id": "1020"
   },
   "1021": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "为什么阿姨不流汗",
+    "option_yes": "因为阿姨怕留下遗憾",
+    "option_no": "因为阿姨不热",
     "id": "1021"
   },
   "1022": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "什么东西最不寂寞？",
+    "option_yes": "游标卡尺，游标卡尺不估读",
+    "option_no": "石头",
     "id": "1022"
   },
   "1023": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "积德行善的反义词是什么？",
+    "option_yes": "柯南行凶",
+    "option_no": "作恶多端",
     "id": "1023"
   },
   "1024": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "M和N吵架，最后是谁道歉？",
+    "option_yes": "M，M sorry",
+    "option_no": "谁错了谁道歉",
     "id": "1024"
   },
   "1025": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "晴天为什么让人心情好？",
+    "option_yes": "因为人在无雨的时候会笑",
+    "option_no": "因为有阳光",
     "id": "1025"
   },
   "1026": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "花生到日本会变成什么？",
+    "option_yes": "花生酱",
+    "option_no": "进口花生",
     "id": "1026"
   },
   "1027": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "什么东西和灯泡一样，但是不会亮？",
+    "option_yes": "坏灯泡",
+    "option_no": "鸭梨",
     "id": "1027"
   },
   "1028": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "可乐和咖啡谁更长寿？",
+    "option_yes": "咖啡，因为可乐会没气",
+    "option_no": "咖啡，咖啡的历史更悠久",
     "id": "1028"
   },
   "1029": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "米的妈妈是谁？",
+    "option_yes": "是花，因为花生米",
+    "option_no": "是水稻",
     "id": "1029"
   },
   "1030": {
     "$type": "ColdJokeConfig, Assembly-CSharp",
-    "c1": null,
-    "c2": null,
+    "content": "湖南的鬼是什么？",
+    "option_yes": "湘飘飘",
+    "option_no": "",
     "id": "1030"
   }
 }

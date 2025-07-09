@@ -194,6 +194,8 @@ public class Kettle : MonoBehaviour
 
         hasStartedDelay = false;
 
+        AliveRedPiont.Instance.AddRedPoint(false);
+
         Debug.Log("进入状态1：烧水壶进入特殊状态");
     }
 
@@ -206,6 +208,9 @@ public class Kettle : MonoBehaviour
         lid.StopShaking();
 
         if (partsObj) partsObj.SetActive(false);
+
+        AliveRedPiont.Instance.RemoveRedPoint(false);
+
         Debug.Log("进入状态0：烧水壶恢复正常");
     }
 

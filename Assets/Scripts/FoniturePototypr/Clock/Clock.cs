@@ -268,6 +268,8 @@ public class Clock : MonoBehaviour
         GameMgr.Instance.SetTimeScale(GameMgr.TIME_SCALE_SPECIAL);
         hasStartedDelay = false;
 
+        AliveRedPiont.Instance.AddRedPoint(true);
+
         Debug.Log("进入状态1：时钟进入特殊状态");
     }
 
@@ -281,6 +283,8 @@ public class Clock : MonoBehaviour
         directionChangeTimer = 0f;
         reverseRotation = false;
         if (partsObj) partsObj.SetActive(false);
+
+        AliveRedPiont.Instance.RemoveRedPoint(true);
         Debug.Log("进入状态0：时钟恢复正常");
     }
 
