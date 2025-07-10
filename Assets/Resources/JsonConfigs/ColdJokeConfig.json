@@ -207,7 +207,7 @@
     "$type": "ColdJokeConfig, Assembly-CSharp",
     "content": "湖南的鬼是什么？",
     "option_yes": "湘飘飘",
-    "option_no": "",
+    "option_no": "僵尸",
     "id": "1030"
   }
 }
