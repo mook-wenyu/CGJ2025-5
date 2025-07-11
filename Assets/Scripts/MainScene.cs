@@ -81,7 +81,7 @@ public class MainScene : MonoBehaviour
         {
             initStartPanel.SetActive(false);
 
-            WorldSceneRoot.Instance.ResetWorld(GameMgr.currentLevel);
+            WorldSceneRoot.Instance.ResetWorld(GameMgr.initLevel);
         });
     }
 }

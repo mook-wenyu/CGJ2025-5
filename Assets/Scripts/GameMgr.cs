@@ -53,6 +53,10 @@ public class GameMgr : MonoSingleton<GameMgr>
     /// </summary>
     public static bool isInitGame = false;
     /// <summary>
+    /// 初始化关卡
+    /// </summary>
+    public static int initLevel = 1;
+    /// <summary>
     /// 当前关卡
     /// </summary>
     public static int currentLevel = 1;

@@ -33,6 +33,7 @@ public class StartGame : MonoBehaviour
 
     void Start()
     {
+        GameMgr.initLevel = 1;
         GameMgr.currentLevel = 1;
 
         AudioMgr.Instance.PlayMusic("bgm");

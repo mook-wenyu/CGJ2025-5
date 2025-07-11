@@ -157,7 +157,8 @@ public class LevelProgressPanel : MonoSingleton<LevelProgressPanel>
 
     void NextLevel()
     {
-        GameMgr.currentLevel++;
+        GameMgr.currentLevel = GameMgr.currentLevel + 1;
+
         GameMgr.currentState = GameState.Playing;
         WorldSceneRoot.Instance.ResetWorld(GameMgr.currentLevel);
     }
